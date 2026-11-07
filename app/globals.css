@@ -148,3 +148,38 @@ input[type="search"]::-webkit-search-cancel-button {
   white-space: nowrap;
 }
 
+
+/* QR 모음 인쇄: A4 한 장에 2×3, 점선 따라 자르기 */
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+  body {
+    background: #fff !important;
+  }
+  .qr-group h2 {
+    font-size: 11pt;
+    margin: 0 0 3mm;
+  }
+  .qr-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0 !important;
+  }
+  .qr-card {
+    break-inside: avoid;
+    height: 88mm;
+    border: 1px dashed #94a3b8 !important;
+    border-radius: 0 !important;
+    justify-content: center;
+  }
+  .qr-card svg {
+    width: 52mm !important;
+  }
+}
+
+/* 과목 전체 QR(?all=1)로 들어온 학생 기기: 교사용 단추 숨김 */
+html.sth-student [data-teacher] {
+  display: none !important;
+}

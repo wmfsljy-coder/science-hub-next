@@ -81,6 +81,14 @@ http
       file = path.join(file, "index.html");
     }
     if (!fs.existsSync(file) && fs.existsSync(file + ".html")) file += ".html";
+    /* Next 미리 불러오기 조각: __next.c.$d$repo.__PAGE__.txt → __next.c/$d$repo/__PAGE__.txt (Windows 빌드는 폴더로 만듦) */
+    if (!fs.existsSync(file)) {
+      const m = /^__next\.([^.]+)\.(.+\.txt)$/.exec(path.basename(file));
+      if (m) {
+        const alt = path.join(path.dirname(file), "__next." + m[1], ...m[2].replace(/\.txt$/, "").split(".")) + ".txt";
+        if (fs.existsSync(alt)) file = alt;
+      }
+    }
     if (!fs.existsSync(file)) {
       res.writeHead(404, { "Content-Type": TYPES[".html"] });
       return res.end(fs.existsSync(path.join(ROOT, "404.html")) ? fs.readFileSync(path.join(ROOT, "404.html")) : "not found");

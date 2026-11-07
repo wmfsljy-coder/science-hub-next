@@ -18,6 +18,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     env:
       CONTENT_DIR: .content
     steps:
@@ -37,6 +38,22 @@ jobs:
 
       - name: 정적 사이트 빌드
         run: npm run build
+
+      # 배포 전 점검: out/ 을 공유 끈 로컬 서버로 띄우고 옛 점검 도구(allcheck·quizrun·labrun·tabcheck)를 새 경로로.
+      # 푸시는 표본(과목마다 1단원 + 몇 개), 매일 새벽·손으로 돌릴 때는 44단원 전부. 실패하면 배포하지 않음.
+      - name: 브라우저 설치(Playwright)
+        run: npx playwright install --with-deps chromium
+
+      - name: 배포 전 점검
+        run: node scripts/check-units.mjs ${{ github.event_name != 'push' && '--all' || '' }}
+
+      - name: 점검 결과 보관
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: check-report
+          path: check-report
+          if-no-files-found: ignore
 
       - uses: actions/upload-pages-artifact@v3
         with:

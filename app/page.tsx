@@ -1,4 +1,6 @@
 import HomeBrowser, { type CourseCardData, type SearchItem } from "@/components/HomeBrowser";
+import { TeacherMark } from "@/components/DeviceMode";
+import { ProgressSummary } from "@/components/Progress";
 import { assetUrl, getCourses } from "@/lib/content";
 
 export default function Home() {
@@ -15,6 +17,7 @@ export default function Home() {
     color: c.color,
     description: c.description,
     unitCount: c.units.length,
+    keys: c.units.map((u) => u.key).filter(Boolean),
     thumbs: c.units.slice(0, 3).map((u) => assetUrl(u.thumb)),
   }));
 
@@ -32,6 +35,7 @@ export default function Home() {
       summary: u.summary,
       url: u.url,
       play: u.play,
+      unitKey: u.key,
       thumb: assetUrl(u.thumb),
       thumbAlt: u.thumbAlt,
       codes: u.standards.map((s) => s.code),
@@ -63,6 +67,10 @@ export default function Home() {
           {courses.length}과목 {unitTotal}단원. 지도안을 읽고, 학생에게 QR로 단원을 띄우고, &lsquo;수업 열기&rsquo;로 시작합니다.
         </p>
       </section>
+      <TeacherMark />
+      <div className="mb-6">
+        <ProgressSummary keys={courses.flatMap((c) => c.units.map((u) => u.key)).filter(Boolean)} />
+      </div>
       <HomeBrowser courses={courseCards} items={items} />
     </div>
   );

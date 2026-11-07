@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>반별 활동 — 교사용</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128202;</text></svg>">
+<link rel="stylesheet" href="../assets/theme.css">
+<style>
+  .hero { padding: 48px 30px 8px; max-width: 1180px; margin: 0 auto; }
+  .hero .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-700); font-weight: 800; }
+  .hero h1 { font-size: clamp(28px, 4.4vw, 40px); margin: 12px 0 12px; font-weight: 400; }
+  .hero p { color: var(--mist); font-size: 15px; line-height: 1.75; max-width: 700px; margin: 0; }
+  .hero .back { display: inline-block; margin-bottom: 10px; font-size: 13px; color: var(--mist); text-decoration: none; font-weight: 700; }
+  .hero .back:hover { color: var(--teal-700); }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 22px 30px 80px; }
+  .panel { background: var(--panel); border: 2px solid var(--line); border-radius: 18px; padding: 20px 22px; margin-bottom: 20px; }
+  .panel h2 { font-size: 19px; margin: 0 0 4px; font-weight: 400; }
+  .panel .sub { color: var(--mist); font-size: 13px; line-height: 1.7; margin: 0 0 16px; }
+
+  .keyrow { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+  .keyrow label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 800; color: var(--mist); }
+  .keyrow input { border: 2px solid var(--line); border-radius: 12px; padding: 9px 12px; font-size: 14px;
+    font-family: inherit; background: var(--card-2); color: var(--ink); width: 280px; }
+  .keyrow input:focus { outline: none; border-color: var(--brand); }
+  .keyrow select { border: 2px solid var(--line); border-radius: 12px; padding: 8px 10px; font-size: 14px; font-family: inherit; background: var(--card-2); color: var(--ink); max-width: 360px; }
+  .msg { font-size: 13px; color: var(--mist); margin-left: 4px; }
+  .msg.bad { color: var(--rose-700); }
+
+  .cls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 12px; }
+  .cls-card { border: 2px solid var(--line); border-radius: 16px; padding: 14px 16px; background: var(--card); cursor: pointer;
+    transition: border-color .15s, transform .15s; }
+  .cls-card:hover { border-color: var(--teal-dim); transform: translateY(-2px); }
+  .cls-card.on { border-color: var(--brand); background: var(--brand-100); }
+  .cls-card .name { font-family: "Jua"; font-size: 22px; color: var(--ink); }
+  .cls-card .nums { font-size: 12.5px; color: var(--mist); margin-top: 6px; line-height: 1.7; }
+  .cls-card .nums b { color: var(--teal-700); }
+
+  .tbl-scroll { overflow-x: auto; margin-top: 8px; }
+  table.act { border-collapse: collapse; font-size: 12.5px; min-width: 100%; }
+  table.act th, table.act td { border: 1px solid var(--line); padding: 7px 10px; text-align: center; white-space: nowrap; }
+  table.act th.unit, table.act td.unit { text-align: left; white-space: normal; min-width: 240px; max-width: 380px; font-weight: 800; color: var(--ink); }
+  table.act thead th { background: var(--card-2); color: var(--mist); font-weight: 800; position: sticky; top: 0; }
+  table.act td.n { font-weight: 800; color: var(--ink); }
+  table.act td.z { color: var(--line); }
+
+  .feed { display: flex; flex-direction: column; gap: 6px; }
+  .feed-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding: 8px 12px; border-radius: 12px;
+    background: var(--card-2); border: 2px solid var(--line); font-size: 12.5px; color: var(--mist); }
+  .feed-row .who { font-weight: 800; color: var(--ink); }
+  .feed-row .cls { font-weight: 800; color: var(--teal-700); }
+  .feed-row .u { flex: 1 1 220px; }
+  .feed-row .t { font-size: 11.5px; }
+  .feed-row.first { border-color: var(--teal-100); }
+
+  .subj-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 2px solid var(--line); border-radius: 999px; padding: 7px 14px; font: inherit; font-weight: 800; font-size: 13.5px;
+    background: var(--card); color: var(--ink); cursor: pointer; }
+  .chip:hover { border-color: var(--teal-dim); }
+  .chip.on { border-color: var(--brand); background: var(--brand-100); color: var(--brand-700); }
+  .chip.on .c { color: var(--brand-700); }
+  .chip .c { color: var(--mist); font-weight: 700; margin-left: 4px; font-size: 12px; }
+  .chip:disabled { opacity: .45; cursor: default; }
+  .empty { color: var(--mist); font-size: 13.5px; line-height: 1.8; }
+  .steps { color: var(--mist); font-size: 13.5px; line-height: 1.9; margin: 10px 0 0; padding-left: 20px; }
+  .steps b { color: var(--ink); }
+  .steps code { background: var(--card-2); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-size: 12px; }
+  .glance { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 12px; margin-top: 6px; }
+  .gl-box { border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); }
+  .gl-box h4 { margin: 0 0 4px; font-size: 13.5px; color: var(--ink); }
+  .gl-box .q { font-size: 12.5px; color: var(--mist); line-height: 1.6; margin: 0 0 8px; }
+  .gl-opt { display: grid; grid-template-columns: 1fr 90px 46px; gap: 8px; align-items: center; font-size: 12.5px; color: var(--ink); padding: 3px 0; }
+  .gl-opt i { display: block; height: 8px; border-radius: 99px; background: var(--card-2); border: 1px solid var(--line); overflow: hidden; }
+  .gl-opt i b { display: block; height: 100%; background: var(--teal-dim); }
+  .gl-opt.ok { font-weight: 800; }
+  .gl-opt.ok i b { background: var(--brand); }
+  .gl-opt span:last-child { text-align: right; color: var(--mist); font-variant-numeric: tabular-nums; }
+  .gl-list { margin: 0; padding-left: 18px; font-size: 12.5px; line-height: 1.75; color: var(--ink); }
+  .gl-list .m { color: var(--mist); }
+  .vote-big { position: fixed; inset: 0; z-index: 50; background: rgba(10,20,30,.55); display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .vb-card { background: var(--panel); border-radius: 22px; padding: 22px 28px; width: min(1100px, 100%); max-height: 96vh; overflow: auto; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+  .vb-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+  .vb-top .vb-k { margin-right: auto; color: var(--mist); font-size: 14px; font-weight: 800; }
+  .vb-card h2 { font-size: clamp(24px, 3vw, 34px); margin: 10px 0 6px; }
+  .vb-q { font-size: clamp(16px, 1.8vw, 21px); line-height: 1.6; color: var(--ink); margin: 0 0 14px; }
+  .vb-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 18px; }
+  .vb-col h3 { font-size: 16px; color: var(--mist); margin: 6px 0 8px; }
+  .gl-opt.big { grid-template-columns: 1fr 34% 64px; font-size: clamp(15px, 1.6vw, 19px); padding: 6px 0; }
+  .gl-opt.big i { height: 18px; }
+  .vb-gain{font-size:26px;font-weight:900;text-align:center;margin:14px 0 4px;color:var(--brand-700)}
+    .vb-note { font-size: 13px; color: var(--mist); margin: 14px 0 0; }
+  @media (max-width: 780px) { .hero { padding: 34px 18px 8px; } .wrap { padding: 18px 18px 70px; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a class="back" href="../">← 교사용 허브</a>
+  <div class="eyebrow">교사용 · 우리 반 공유</div>
+  <h1 class="display">반별 활동</h1>
+  <p>학생들이 각 단원의 <b>우리 반</b> 탭에서 올린 기록을 반별로 모아 보여 줍니다. 학생이 쓴 글까지 보시려면 구글 시트를 여세요.</p>
+</div>
+
+<div class="wrap">
+
+  <div class="panel">
+    <h2 class="display">교사 열쇠</h2>
+    <p class="sub">시트의 <b>설정</b> 탭 B1에 있는 글자입니다. 이 탭을 닫을 때까지만 기억합니다(교실 공용 PC 에 남지 않게).</p>
+    <div class="keyrow">
+      <label>열쇠 <input type="password" id="key" placeholder="시트 설정 탭 B1" autocomplete="off"></label>
+      <button class="btn primary" type="button" id="go">불러오기</button>
+      <button class="btn" type="button" id="forget">잊기</button>
+      <span class="msg" id="msg"></span>
+    </div>
+  </div>
+
+  <div id="out"></div>
+
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+<script src="../assets/theme.js"></script>
+<script src="../assets/share-config.js"></script>
+<script src="../assets/precheck-all.js"></script>
+<script>
+(function () {
+  "use strict";
+  var KEY = "sth-teacher-key";
+  var URL_ = (window.STH_SHARE_URL || "").trim();
+  var $ = function (id) { return document.getElementById(id); };
+  function el(t, c, s) { var e = document.createElement(t); if (c) e.className = c; if (s != null) e.textContent = s; return e; }
+  function when(t) {
+    var d = new Date(t);
+    if (!t || isNaN(d.getTime())) return "";
+    return (d.getMonth() + 1) + "월 " + d.getDate() + "일 " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  }
+  function ago(t) {
+    if (!t) return "";
+    var s = (Date.now() - t) / 1000;
+    if (s < 90) return "방금";
+    if (s < 3600) return Math.round(s / 60) + "분 전";
+    if (s < 86400) return Math.round(s / 3600) + "시간 전";
+    return Math.round(s / 86400) + "일 전";
+  }
+
+  var out = $("out"), msg = $("msg"), pick = null, data = null, evd = null;
+
+  /* 과목별 보기 — 단원 코드로 과목을 찾는다(../assets/precheck-all.js의 STH_UNITS) */
+  var SUBJ_KEY = "sth-teacher-subj", subj = null;
+  try { subj = localStorage.getItem(SUBJ_KEY) || null; } catch (e) {}
+  var UL = window.STH_UNITS || [], UMAP = {}, SUBJS = [];
+  UL.forEach(function (r, i) { UMAP[r[0]] = { subj: r[1], name: r[2], i: i }; if (SUBJS.indexOf(r[1]) < 0) SUBJS.push(r[1]); });
+  function subjOf(u) { return UMAP[u] ? UMAP[u].subj : "기타"; }
+  function inSubj(u) { return !subj || subjOf(u) === subj; }
+  /* 단원 이름: 과목을 골랐으면 단원 이름만, 전체 보기에서는 과목 이름을 앞에 붙인다 */
+  function uname(u, fallback) { var m = UMAP[u]; return m ? (subj ? m.name : m.subj + " " + m.name) : (fallback || u); }
+  function setSubj(s) { subj = s; try { if (s) localStorage.setItem(SUBJ_KEY, s); else localStorage.removeItem(SUBJ_KEY); } catch (e) {} grp.unit = null; grp.list = null; paint(); }
+  function scope() { return (subj ? subj + " · " : "") + (pick ? pick + "반" : (subj ? "모든 반" : "")); }
+
+  function note(html) { out.innerHTML = ""; var p = el("div", "panel"); p.innerHTML = html; out.appendChild(p); }
+
+  if (!URL_) {
+    note('<h2 class="display">아직 공유가 켜지지 않았습니다</h2>'
+       + '<p class="sub">공유 설정(<code>hub-assets/share-config.js</code>)의 웹 앱 주소가 비어 있거나, 허용되지 않은 주소에서 열었습니다.</p>');
+  }
+
+  /* 교사 열쇠는 이 탭이 열려 있는 동안만 기억한다(sessionStorage) — 교실 공용 PC 에 남지 않게. 예전에 localStorage 에 남은 열쇠는 한 번 옮기고 지운다. */
+  try { var oldKey = localStorage.getItem(KEY); if (oldKey) { if (!sessionStorage.getItem(KEY)) sessionStorage.setItem(KEY, oldKey); localStorage.removeItem(KEY); } $("key").value = sessionStorage.getItem(KEY) || ""; } catch (e) {}
+
+  function load() {
+    var k = ($("key").value || "").trim();
+    if (!URL_) { msg.textContent = "공유 주소가 없습니다."; msg.className = "msg bad"; return; }
+    if (!k) { msg.textContent = "열쇠를 넣어 주세요."; msg.className = "msg bad"; return; }
+    msg.textContent = "불러오는 중…"; msg.className = "msg";
+    /* 열쇠가 주소에 남지 않도록 POST로 보낸다(text/plain이라 사전 요청이 없다) */
+    fetch(URL_, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+                  body: JSON.stringify({ action: "teacher", key: k }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j.ok) throw new Error(j.error || "오류");
+        try { sessionStorage.setItem(KEY, k); } catch (e) {}
+        msg.textContent = "불러왔습니다. " + when(Date.now());
+        data = j; paint();
+        loadEv(k);
+      })
+      .catch(function (e) {
+        msg.textContent = "불러오지 못했습니다. (" + e.message + ")"; msg.className = "msg bad";
+        note('<h2 class="display">불러오지 못했습니다</h2>'
+           + '<p class="sub">열쇠가 다르거나, 시트에서 아직 <b>권한 승인</b>을 하지 않았을 수 있습니다.</p>'
+           + '<ol class="steps">'
+           + '<li>구글 시트 <b>과학 수업</b>를 엽니다.</li>'
+           + '<li>위쪽 메뉴에서 <b>우리 반 공유 → 준비하기 / 교사 열쇠 보기</b>를 누릅니다.</li>'
+           + '<li>권한을 허용하면 <b>교사 열쇠</b>가 뜹니다. 그 글자를 위 칸에 넣으세요.</li>'
+           + '</ol>');
+      });
+  }
+
+  /* 수업 효과 기록(첫 추리·완주·한 번에 맞힘·막힌 장면) — 열쇠가 맞을 때만 */
+  function loadEv(k) {
+    fetch(URL_, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+                  body: JSON.stringify({ action: "evidence", key: k }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (j.ok) { evd = j.rows || []; paint(); } })
+      .catch(function () {});
+  }
+  function pct(a, b) { return b ? Math.round(a / b * 100) + "%" : "–"; }
+  function evRows() {
+    var rows = (evd || []).filter(function (r) { return (!pick || r.cls === pick) && inSubj(r.unit); });
+    return rows.map(function (r) {
+      var epN = 0, epDone = 0, stuck = {};
+      r.eps.forEach(function (e) { epN += e.n; epDone += e.done; Object.keys(e.stuck).forEach(function (sc) { var key = e.k + " " + sc + "장면"; stuck[key] = (stuck[key] || 0) + e.stuck[sc]; }); });
+      var top = Object.keys(stuck).sort(function (a, b) { return stuck[b] - stuck[a]; })[0];
+      return { unit: r.unit, label: r.label || r.unit, cls: r.cls, n: r.n, ev: r.withEv,
+               pre: pct(r.g1, r.gn), preN: r.gn, done: pct(epDone, epN), q1: pct(r.q1, r.qt), qt: r.qt,
+               lab: pct(r.lab, r.n), stuck: top ? top + " (" + stuck[top] + "명)" : "–",
+               gates: r.gates.map(function (g) { return g.k + " " + g.ok + "/" + g.n; }).join(" · "),
+               miss: Object.keys(r.miss || {}).sort(function (a, b) { return r.miss[b] - r.miss[a]; }).slice(0, 5).map(function (id) { return id + " " + r.miss[id] + "명"; }).join(" · ") || "–" };
+    });
+  }
+  function csv() {
+    var head = ["단원", "단원이름", "반", "올린 학생", "효과 기록 학생", "첫 추리 정답률", "첫 추리 응답 수", "이야기 완주율", "수준별 문제 한 번에 맞힌 비율", "손댄 문항 수", "응용 실험실 1개 이상 해결", "가장 많이 멈춘 장면", "첫 추리 문항별(맞음/응답)", "처음에 많이 틀린 문항(10-09부터)"];
+    var lines = [head].concat(evRows().map(function (r) { return [r.unit, r.label, r.cls, r.n, r.ev, r.pre, r.preN, r.done, r.q1, r.qt, r.lab, r.stuck, r.gates, r.miss]; }));
+    var txt = String.fromCharCode(0xFEFF) + lines.map(function (l) { return l.map(function (c) { c = String(c); return (c.indexOf(",") >= 0 || c.indexOf("\"") >= 0 || c.indexOf(String.fromCharCode(10)) >= 0) ? "\"" + c.split("\"").join("\"\"") + "\"" : c; }).join(","); }).join(String.fromCharCode(13, 10));
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([txt], { type: "text/csv;charset=utf-8" }));
+    a.download = "수업효과_" + (pick || "전체") + "_" + new Date().toISOString().slice(0, 10) + ".csv";
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  function paintEv() {
+    if (!evd) return;
+    var p = el("div", "panel");
+    p.appendChild(el("h2", "display", "수업 효과"));
+    var sub = el("p", "sub");
+    sub.innerHTML = "학생이 올릴 때 함께 오는 기록입니다(2026-10-03 이후 올린 것부터). <b>첫 추리 정답률</b>은 이야기를 시작하기 전 예상이 맞은 비율(사전), "
+      + "<b>이야기 완주율</b>은 끝까지 푼 이야기의 비율, <b>한 번에 맞힌 비율</b>은 수준별 문제를 해설 없이 첫 시도에 맞힌 비율(사후)입니다. "
+      + "첫 추리는 일부러 오개념을 건드리는 질문이라 낮게 나오는 것이 정상입니다. 학생 수가 적으면 해석에 주의하세요."
+      + (scope() ? "  지금은 " + scope() + "만 보고 있습니다." : "");
+    p.appendChild(sub);
+    var rows = evRows();
+    if (!rows.length) { p.appendChild(el("p", "empty", "아직 효과 기록이 담긴 올리기가 없습니다. 학생이 다음에 올리면 쌓이기 시작합니다.")); out.appendChild(p); return; }
+    var bt = el("button", "btn", "📥 표 내려받기 (CSV)"); bt.type = "button"; bt.addEventListener("click", csv);
+    p.appendChild(bt);
+    var sc = el("div", "tbl-scroll"), tb = document.createElement("table"); tb.className = "act";
+    var cols = [["unit", "단원"], ["cls", "반"], ["n", "학생"], ["pre", "첫 추리 정답률(사전)"], ["done", "이야기 완주율"], ["q1", "한 번에 맞힘(사후)"], ["lab", "실험실 해결"], ["stuck", "가장 많이 멈춘 장면"]];
+    var tr = document.createElement("tr"); cols.forEach(function (c) { var th = document.createElement("th"); if (c[0] === "unit") th.className = "unit"; th.textContent = c[1]; tr.appendChild(th); });
+    var th_ = document.createElement("thead"); th_.appendChild(tr); tb.appendChild(th_);
+    var tbody = document.createElement("tbody");
+    rows.forEach(function (r) {
+      var t = document.createElement("tr");
+      cols.forEach(function (c) { var td = document.createElement("td"); if (c[0] === "unit") { td.className = "unit"; td.textContent = r.label; td.title = r.gates; } else td.textContent = r[c[0]]; t.appendChild(td); });
+      tbody.appendChild(t);
+    });
+    tb.appendChild(tbody); sc.appendChild(tb); p.appendChild(sc);
+    out.appendChild(p);
+    paintPc();
+    paintGroups(rows);
+  }
+
+  /* 학생 생각 점검 — 단원을 시작할 때의 생각(사전)과 이야기를 끝낸 뒤의 생각(사후).
+     확신하고 틀린 학생이 많은 문장이 그 반에 단단히 박힌 오개념이다. */
+  function paintPc() {
+    var TXT = window.STH_PC_ITEMS || {};
+    var rows = (evd || []).filter(function (r) { return (!pick || r.cls === pick) && inSubj(r.unit) && r.pc && r.pc.length; });
+    var p = el("div", "panel");
+    p.appendChild(el("h2", "display", "학생 생각 점검"));
+    p.appendChild(el("p", "sub", "단원 첫머리의 ‘내 생각 점검’ 기록입니다. 확신하고 틀린 학생이 많은 문장부터 늘어놓았습니다. "
+      + "이런 문장은 수업 첫머리에 반 전체에 던져 토론을 여는 데 쓰기 좋습니다. ‘사전 → 사후 정답’은 처음과 이야기 뒤에 모두 답한 학생만으로 셉니다. "
+      + "시트 메뉴 ‘우리 반 공유 → 생각 점검 표 새로 만들기’를 누르면 같은 표가 시트의 ‘생각 점검’ 탭에도 만들어집니다."));
+    if (!rows.length) { p.appendChild(el("p", "empty", "아직 올라온 생각 점검 기록이 없습니다. 학생이 단원 첫머리의 생각 점검에 답하고 우리 반 탭에서 올리면 여기에 쌓입니다.")); out.appendChild(p); return; }
+    rows.forEach(function (r) {
+      var items = TXT[r.unit] || {};
+      var hh = el("h3", null, (r.label || r.unit) + " · " + r.cls + "반"); hh.style.cssText = "font-size:15px;margin:16px 0 6px"; p.appendChild(hh);
+      /* 오개념 변화 — 처음·이야기 뒤를 모두 답한 짝만 셈 */
+      var T = { pn: 0, pre: 0, post: 0, preSW: 0, postSW: 0, fix: 0, slip: 0, stay: 0 };
+      r.pc.forEach(function (x) { Object.keys(T).forEach(function (k) { T[k] += x[k] || 0; }); });
+      var gT = T.pn - T.pre > 0 ? (T.post - T.pre) / (T.pn - T.pre) : null;
+      var ms = el("p", "sub");
+      ms.innerHTML = T.pn ? "<b>오개념 변화</b> — 두 번 답한 응답 " + T.pn + "개 · 정답 " + pct(T.pre, T.pn) + " → <b>" + pct(T.post, T.pn) + "</b> · 확신 오답 " + T.preSW + " → <b>" + T.postSW + "</b>"
+        + " · 정규화 향상도 <b>g = " + (gT === null ? "–" : gT.toFixed(2)) + "</b>" + (gT === null ? "" : gT >= 0.7 ? " (크게 바뀜)" : gT >= 0.3 ? " (어느 정도 바뀜)" : gT > 0 ? " (조금 바뀜)" : " (바뀌지 않음)")
+        + " · 오개념→바른 개념 " + T.fix + " · 맞았다가 틀림 " + T.slip + " · 남은 오개념 " + T.stay
+        : "아직 이야기를 끝내고 다시 답한 학생이 없어 변화는 측정 전입니다.";
+      ms.style.margin = "0 0 8px"; p.appendChild(ms);
+      var sc = el("div", "tbl-scroll"), tb = document.createElement("table"); tb.className = "act";
+      var hd = ["문장", "정답", "처음 답함", "처음 맞음", "확신하고 틀림", "잘 모르겠다", "사전 → 사후 정답", "확신 오답 사전 → 사후", "g", "틀림·모름 → 맞음"];
+      var tr = document.createElement("tr"); hd.forEach(function (h, i) { var th = document.createElement("th"); if (!i) th.className = "unit"; th.textContent = h; tr.appendChild(th); });
+      var th_ = document.createElement("thead"); th_.appendChild(tr); tb.appendChild(th_);
+      var body = document.createElement("tbody");
+      r.pc.slice().sort(function (a, b) { return (b.sureWrong / (b.n || 1)) - (a.sureWrong / (a.n || 1)); }).forEach(function (x) {
+        var it = items[x.k] || {}, t = document.createElement("tr");
+        var gx = x.pn - x.pre > 0 ? ((x.post - x.pre) / (x.pn - x.pre)).toFixed(2) : "–";
+        [it.s ? x.k + ". " + it.s : x.k, it.a == null ? "" : (it.a ? "맞다" : "틀리다"), x.n, pct(x.ok, x.n), x.sureWrong + "명 (" + pct(x.sureWrong, x.n) + ")", x.unk,
+         x.pn ? pct(x.pre, x.pn) + " → " + pct(x.post, x.pn) + " (" + x.pn + "명)" : "–", x.pn ? (x.preSW || 0) + " → " + (x.postSW || 0) : "–", gx, x.fix].forEach(function (v, i) {
+          var td = document.createElement("td"); if (!i) td.className = "unit"; td.textContent = v;
+          if (i === 4 && x.n && x.sureWrong / x.n >= 0.3) td.style.fontWeight = "800";
+          t.appendChild(td);
+        });
+        body.appendChild(t);
+      });
+      tb.appendChild(body); sc.appendChild(tb); p.appendChild(sc);
+    });
+    out.appendChild(p);
+  }
+
+  /* 모둠 편성 · 먼저 가 볼 학생 — 반 하나와 단원 하나를 골라 학생별 기록을 불러온다.
+     첫 추리에서 서로 다른 보기를 고른 학생끼리 같은 모둠이 되도록 나눈다(생각이 다르면 토론이 생긴다). */
+  var grp = { unit: null, size: 4, list: null, seed: 0, err: "" };
+  var MK = "㉠㉡㉢㉣㉤";
+  function progress(s) { var n = 0, t = 0; Object.keys(s.e).forEach(function (k) { n += s.e[k][0]; t += s.e[k][1]; }); return t ? n / t : 0; }
+  function sig(s, keys) { return keys.map(function (k) { var g = s.g[k]; return g ? (g[1] != null ? g[1] : (g[0] ? "o" : "x")) : "-"; }).join("|"); }
+  function rnd(i) { var x = Math.sin((i + 1) * 9301 + grp.seed * 49297) * 233280; return x - Math.floor(x); }
+  function makeGroups(list, size) {
+    var keys = {}; list.forEach(function (s) { Object.keys(s.g).forEach(function (k) { keys[k] = 1; }); }); keys = Object.keys(keys).sort();
+    var order = list.map(function (s, i) { return { s: s, sg: sig(s, keys), r: rnd(i) }; });
+    order.sort(function (a, b) { return a.sg < b.sg ? -1 : (a.sg > b.sg ? 1 : a.r - b.r); });
+    var G = Math.max(1, Math.round(list.length / size)), out2 = [];
+    for (var i = 0; i < G; i++) out2.push([]);
+    order.forEach(function (o, i) { out2[i % G].push(o.s); });
+    return { groups: out2, keys: keys };
+  }
+  function loadStudents() {
+    var k = ($("key").value || "").trim();
+    if (!pick || !grp.unit) return;
+    grp.list = null; grp.err = "불러오는 중…"; paint();
+    fetch(URL_, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+                  body: JSON.stringify({ action: "students", key: k, cls: pick, unit: grp.unit }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (!j.ok) throw new Error(j.error || "오류"); grp.list = j.students || []; grp.err = ""; paint(); })
+      .catch(function (e) { grp.err = "불러오지 못했습니다 (" + e.message + ")"; paint(); });
+  }
+  /* 반 한눈에 — 불러온 학생별 기록으로 셈한다: 첫 추리에서 고른 보기, 처음에 틀린 문항, 멈춘 장면.
+     문장은 assets/unit-items-all.js(_tools/make_unit_items.js 가 만든 파일)에서 — 처음 쓸 때 한 번 불러온다. */
+  var ITEMS_ = null;
+  function needItems() {
+    if (ITEMS_ || window.STH_UNIT_ITEMS) { ITEMS_ = window.STH_UNIT_ITEMS; return; }
+    if (needItems.busy) return; needItems.busy = 1;
+    var sc = document.createElement("script"); sc.src = "../assets/unit-items-all.js";
+    sc.onload = function () { ITEMS_ = window.STH_UNIT_ITEMS || {}; paint(); };
+    sc.onerror = function () { ITEMS_ = {}; };
+    document.head.appendChild(sc);
+  }
+  function paintGlance(p, L, unit) {
+    needItems();
+    var IT = (ITEMS_ || {})[unit] || { g: {}, q: {} }, LV = ["", "기본", "발전", "심화"];
+    var h = el("h3", null, "반 한눈에 (" + L.length + "명)"); h.style.cssText = "font-size:15px;margin:16px 0 6px"; p.appendChild(h);
+    var box = el("div", "glance");
+    /* 1) 첫 추리 — 보기마다 고른 학생 수. 맞음(✓)으로 판정된 보기를 굵게 */
+    var keys = Object.keys(IT.g); L.forEach(function (s) { Object.keys(s.g).forEach(function (k) { if (keys.indexOf(k) < 0) keys.push(k); }); });
+    keys.forEach(function (k) {
+      var G = IT.g[k] || { t: k, q: "", o: [] }, cnt = [], okIdx = {}, n = 0, noIdx = 0;
+      L.forEach(function (s) { var g = s.g[k]; if (!g) return; n++; if (g[1] == null) { noIdx++; return; } cnt[g[1]] = (cnt[g[1]] || 0) + 1; if (g[0]) okIdx[g[1]] = 1; });
+      if (!n) return;
+      var b = el("div", "gl-box");
+      b.appendChild(el("h4", null, "첫 추리 · " + G.t));
+      if (G.q) b.appendChild(el("p", "q", G.q));
+      var nopt = Math.max(G.o.length, cnt.length);
+      for (var i = 0; i < nopt; i++) {
+        var c = cnt[i] || 0, r = el("div", "gl-opt" + (okIdx[i] ? " ok" : ""));
+        r.appendChild(el("span", null, (G.o[i] || MK.charAt(i)) + (okIdx[i] ? " ✓" : "")));
+        var tr = el("i"), f = el("b"); f.style.width = (n ? c / n * 100 : 0) + "%"; tr.appendChild(f); r.appendChild(tr);
+        r.appendChild(el("span", null, c + "명"));
+        b.appendChild(r);
+      }
+      if (noIdx) b.appendChild(el("p", "q", "고른 보기 기록이 없는 옛 올리기 " + noIdx + "명은 빼고 셌습니다."));
+      box.appendChild(b);
+    });
+    /* 2) 처음에 틀린 문항 — 많이 틀린 순 6개 */
+    var miss = {}, qn = 0;
+    L.forEach(function (s) { if (s.q && s.q[1]) qn++; (s.x || []).forEach(function (id) { miss[id] = (miss[id] || 0) + 1; }); });
+    var top = Object.keys(miss).sort(function (a, b) { return miss[b] - miss[a] || (a < b ? -1 : 1); }).slice(0, 6);
+    var b2 = el("div", "gl-box"); b2.appendChild(el("h4", null, "처음에 많이 틀린 문항"));
+    var rn = 0, ra = 0, rb = 0; L.forEach(function (s) { if (s.r && s.r[1]) { rn++; ra += s.r[0]; rb += s.r[1]; } });
+    if (rn) b2.appendChild(el("p", "q", "🔁 다시 풀기: " + rn + "명이 " + rb + "문항을 다시 풀어 " + ra + "문항(" + Math.round(ra / rb * 100) + "%)을 한 번에 맞혔습니다."));
+    if (!top.length) b2.appendChild(el("p", "q", qn ? "수준별 문제를 푼 " + qn + "명 가운데 처음에 틀린 문항이 아직 없습니다. (이 기록은 10월 9일 이후 올리기부터 모입니다.)" : "아직 수준별 문제를 푼 기록이 없습니다."));
+    else {
+      b2.appendChild(el("p", "q", "수준별 문제를 푼 " + qn + "명 기준 · 해설을 먼저 본 것도 틀린 것으로 셉니다."));
+      var ol = el("ol", "gl-list");
+      top.forEach(function (id) {
+        var q = IT.q[id], li = el("li");
+        li.appendChild(el("b", null, miss[id] + "명 "));
+        li.appendChild(el("span", "m", id + (q ? " · " + (LV[q[0]] || "") + " · " + q[1] + " " : " ")));
+        if (q) li.appendChild(document.createTextNode(q[2]));
+        ol.appendChild(li);
+      });
+      b2.appendChild(ol);
+    }
+    /* 확실하다고 했는데 틀린 문항(과신) — 학생이 답하기 전에 ‘확실’을 고르고 처음에 틀린 문항 */
+    var over = {}; L.forEach(function (s) { (s.o || []).forEach(function (id) { over[id] = (over[id] || 0) + 1; }); });
+    var otop = Object.keys(over).sort(function (a, b) { return over[b] - over[a] || (a < b ? -1 : 1); }).slice(0, 5);
+    if (otop.length) {
+      b2.appendChild(el("p", "q", "🎯 확실하다고 했는데 틀린 문항 — 오개념이 굳어 있을 수 있는 곳입니다."));
+      var ol3 = el("ol", "gl-list");
+      otop.forEach(function (id) { var q = IT.q[id], li = el("li"); li.appendChild(el("b", null, over[id] + "명 ")); li.appendChild(el("span", "m", id + (q ? " · " + (LV[q[0]] || "") + " · " + q[1] + " " : " "))); if (q) li.appendChild(document.createTextNode(q[2])); ol3.appendChild(li); });
+      b2.appendChild(ol3);
+    }
+    box.appendChild(b2);
+    /* 3) 멈춘 장면 — 이야기를 다 풀지 못한 학생이 처음 막힌 곳 */
+    var st = {}, done = {}, tot = {};
+    L.forEach(function (s) { Object.keys(s.e).forEach(function (k) { var e = s.e[k]; tot[k] = (tot[k] || 0) + 1; if (e[0] >= e[1]) done[k] = (done[k] || 0) + 1; else if (e[2]) { var kk = k + "|" + e[2]; st[kk] = (st[kk] || 0) + 1; } }); });
+    var b3 = el("div", "gl-box"); b3.appendChild(el("h4", null, "이야기 진행 · 멈춘 장면"));
+    var ol2 = el("ol", "gl-list"); ol2.style.listStyle = "none"; ol2.style.paddingLeft = "0";
+    Object.keys(tot).sort().forEach(function (k) {
+      var nm = /^ep(\w+)$/.exec(k) ? "이야기 " + k.slice(2) : k;
+      var at = Object.keys(st).filter(function (x) { return x.split("|")[0] === k; }).sort(function (a, b) { return st[b] - st[a]; })
+        .map(function (x) { return x.split("|")[1] + "장면 " + st[x] + "명"; });
+      var li = el("li"); li.appendChild(el("b", null, nm + " "));
+      li.appendChild(el("span", "m", "끝까지 " + (done[k] || 0) + "/" + tot[k] + "명" + (at.length ? " · 멈춘 곳: " + at.join(", ") : "")));
+      ol2.appendChild(li);
+    });
+    if (!Object.keys(tot).length) b3.appendChild(el("p", "q", "이야기 기록이 없습니다."));
+    else b3.appendChild(ol2);
+    box.appendChild(b3);
+    p.appendChild(box);
+  }
+  /* ---- 첫 추리 투표(동료 교수법) — 학생이 첫 추리에서 ‘우리 반 투표에 보내기’를 누르면 모인다.
+     처음 고른 보기와, 짝과 이야기한 뒤 다시 고른 보기를 나란히 보여 준다. 📺 크게 띄우기는 정답을 가린 채 10초마다 새로 고친다. ---- */
+  var vt = { unit: null, data: null, err: "", at: null };
+  function loadVotes(quiet) {
+    var k = ($("key").value || "").trim();
+    if (!pick || !vt.unit) return Promise.resolve();
+    if (!quiet) { vt.err = "불러오는 중…"; paint(); }
+    return fetch(URL_, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+                         body: JSON.stringify({ action: "votes", key: k, cls: pick, unit: vt.unit }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (!j.ok) throw new Error(j.error || "오류"); vt.data = j.gates || []; vt.err = ""; vt.at = Date.now(); if (!quiet) paint(); })
+      .catch(function (e) { vt.err = "불러오지 못했습니다 (" + e.message + ")"; if (!quiet) paint(); });
+  }
+  function voteBars(host, G, V, which, showOk, big) {
+    var n = which === "b" ? V.nb : V.n, arr = which === "b" ? V.b : V.a, nopt = Math.max(G.o.length, 2);
+    for (var i = 0; i < nopt; i++) {
+      var c = arr[i] || 0, ok = showOk && V.okIdx && V.okIdx[i];
+      var r = el("div", "gl-opt" + (ok ? " ok" : "") + (big ? " big" : ""));
+      r.appendChild(el("span", null, (G.o[i] || MK.charAt(i)) + (ok ? " ✓" : "")));
+      var tr = el("i"), f = el("b"); f.style.width = (n ? c / n * 100 : 0) + "%"; if (which === "b") f.style.background = "var(--violet)"; tr.appendChild(f); r.appendChild(tr);
+      r.appendChild(el("span", null, c + "명"));
+      host.appendChild(r);
+    }
+  }
+  function okFromStudents(k) {
+    var o = {}; (grp.list || []).forEach(function (s) { var g = s.g[k]; if (g && g[0] && g[1] != null) o[g[1]] = 1; });
+    return Object.keys(o).length ? o : null;
+  }
+  function bigView(k) {
+    needItems();
+    var ov = el("div", "vote-big"), showOk = false, tm = null;
+    function close() { clearInterval(tm); ov.remove(); document.removeEventListener("keydown", esc); }
+    function esc(e) { if (e.key === "Escape") close(); }
+    function draw() {
+      var IT = (ITEMS_ || {})[vt.unit] || { g: {} }, G = IT.g[k] || { t: k, q: "", o: [] };
+      var V = (vt.data || []).filter(function (x) { return x.k === k; })[0] || { n: 0, nb: 0, a: [], b: [], moved: 0 };
+      V.okIdx = okFromStudents(k);
+      ov.innerHTML = "";
+      var card = el("div", "vb-card");
+      var top = el("div", "vb-top");
+      top.appendChild(el("span", "vb-k", pick + "반 · 첫 추리 투표 · " + (vt.at ? "새로 고친 때 " + when(vt.at).replace(/^.* /, "") : "")));
+      var b1 = el("button", "btn", showOk ? "정답 가리기" : "정답 보이기"); b1.type = "button";
+      b1.addEventListener("click", function () { showOk = !showOk; draw(); });
+      var b2 = el("button", "btn", "닫기 (Esc)"); b2.type = "button"; b2.addEventListener("click", close);
+      top.appendChild(b1); top.appendChild(b2); card.appendChild(top);
+      card.appendChild(el("h2", "display", G.t || "첫 추리"));
+      if (G.q) card.appendChild(el("p", "vb-q", G.q));
+      var cols = el("div", "vb-cols");
+      var c1 = el("div", "vb-col"); c1.appendChild(el("h3", null, "처음 고른 보기 · " + V.n + "명")); voteBars(c1, G, V, "a", showOk, true); cols.appendChild(c1);
+      if (V.nb) { var c2 = el("div", "vb-col"); c2.appendChild(el("h3", null, "짝과 이야기한 뒤 · " + V.nb + "명 (생각을 바꾼 학생 " + V.moved + "명)")); voteBars(c2, G, V, "b", showOk, true); cols.appendChild(c2); }
+      card.appendChild(cols);
+      if (showOk && V.okIdx) {
+        var okN = function (arr) { var t = 0; Object.keys(V.okIdx).forEach(function (i) { t += arr[i] || 0; }); return t; };
+        var pa = V.n ? Math.round(okN(V.a) / V.n * 100) : 0, pb = V.nb ? Math.round(okN(V.b) / V.nb * 100) : null;
+        card.appendChild(el("p", "vb-gain", "정답을 고른 학생 · 처음 " + pa + "%" + (pb === null ? "" : " → 짝과 이야기한 뒤 " + pb + "%" + (pb > pa ? " ▲" : (pb < pa ? " ▼" : "")))));
+      }
+      if (showOk && !V.okIdx) card.appendChild(el("p", "vb-q", "정답 기록이 아직 없습니다(학생이 ‘우리 반에 올리기’를 하면 생깁니다). 이야기 결말에서 정답을 확인해 주세요."));
+      card.appendChild(el("p", "vb-note", "학생 화면: 첫 추리를 고르고 📣 투표 보내기 → 짝과 이야기 → 💬 다시 고르기 → 📣 다시 보내기. 이 화면은 10초마다 새로 고칩니다."));
+      ov.appendChild(card);
+    }
+    document.body.appendChild(ov); document.addEventListener("keydown", esc);
+    draw();
+    tm = setInterval(function () { loadVotes(true).then(draw); }, 10000);
+  }
+  function paintVotes() {
+    var p = el("div", "panel");
+    p.appendChild(el("h2", "display", "첫 추리 투표 · 짝과 이야기한 뒤 다시"));
+    var sub = el("p", "sub");
+    sub.innerHTML = "학생이 첫 추리를 고르고 <b>📣 우리 반 투표에 보내기</b>를 누르면 여기에 모입니다. 결과를 띄운 뒤 <b>다른 보기를 고른 짝과 2분</b> 이야기하게 하고, "
+      + "<b>💬 다시 고르기 → 📣 다시 보내기</b>로 생각이 어떻게 움직였는지 봅니다. 정답은 두 번째 투표가 끝날 때까지 가려 두세요. 별명은 이 화면에 나오지 않습니다.";
+    p.appendChild(sub);
+    if (!pick) { p.appendChild(el("p", "empty", "위에서 반 카드를 하나 누르면 시작할 수 있습니다.")); out.appendChild(p); return; }
+    var row = el("div", "keyrow");
+    var l1 = el("label", null, "단원"), s1 = document.createElement("select");
+    var list = UL.filter(function (r) { return !subj || r[1] === subj; });
+    list.forEach(function (r) { var o = document.createElement("option"); o.value = r[0]; o.textContent = (subj ? "" : r[1] + " · ") + r[2]; if (vt.unit === r[0]) o.selected = true; s1.appendChild(o); });
+    if (!vt.unit || !list.some(function (r) { return r[0] === vt.unit; })) vt.unit = list.length ? list[0][0] : null;
+    s1.addEventListener("change", function () { vt.unit = s1.value; vt.data = null; paint(); });
+    l1.appendChild(s1); row.appendChild(l1);
+    var b = el("button", "btn primary", vt.data ? "다시 불러오기" : "투표 불러오기"); b.type = "button"; b.addEventListener("click", function () { loadVotes(); }); row.appendChild(b);
+    if (vt.err) row.appendChild(el("span", "msg", vt.err));
+    p.appendChild(row);
+    if (vt.data) {
+      needItems();
+      var IT = (ITEMS_ || {})[vt.unit] || { g: {} };
+      if (!vt.data.length) p.appendChild(el("p", "empty", pick + "반은 이 단원에서 아직 보낸 투표가 없습니다."));
+      var box = el("div", "glance");
+      vt.data.forEach(function (V) {
+        var G = IT.g[V.k] || { t: V.k, q: "", o: [] };
+        V.okIdx = okFromStudents(V.k);
+        var bx = el("div", "gl-box");
+        bx.appendChild(el("h4", null, "첫 추리 · " + G.t + " (" + V.n + "명" + (V.nb ? ", 다시 " + V.nb + "명 · 바꾼 학생 " + V.moved + "명" : "") + ")"));
+        if (G.q) bx.appendChild(el("p", "q", G.q));
+        bx.appendChild(el("p", "q", "처음"));
+        voteBars(bx, G, V, "a", false, false);
+        if (V.nb) { bx.appendChild(el("p", "q", "짝과 이야기한 뒤")); voteBars(bx, G, V, "b", false, false); }
+        var bb = el("button", "btn", "📺 크게 띄우기"); bb.type = "button"; bb.style.marginTop = "8px";
+        bb.addEventListener("click", function () { bigView(V.k); }); bx.appendChild(bb);
+        box.appendChild(bx);
+      });
+      p.appendChild(box);
+    }
+    out.appendChild(p);
+  }
+  /* ---- 익명 돌려 읽기(동료 평가) · 궁금한 것 게시판 — community.gs 의 peerAll · qAll. 선생님 화면에는 글쓴이가 보이고, 📺 크게 띄우기에는 보이지 않는다. ---- */
+  var cm = { unit: null, peer: null, q: null, err: "" };
+  var CM_RUB = ["핵심 개념어", "이야기와 이음", "까닭·근거"];
+  function cmCall(action, extra) {
+    var b = { action: action, key: ($("key").value || "").trim(), cls: pick, unit: cm.unit };
+    Object.keys(extra || {}).forEach(function (x) { b[x] = extra[x]; });
+    return fetch(URL_, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(b) }).then(function (r) { return r.json(); });
+  }
+  function loadCm(quiet) {
+    if (!pick || !cm.unit) return;
+    if (!quiet) { cm.err = "불러오는 중…"; paint(); }
+    Promise.all([cmCall("peerAll"), cmCall("qAll")]).then(function (r) {
+      if (!r[0].ok) throw new Error(r[0].error || "오류");
+      cm.peer = r[0].items || []; cm.q = r[1].ok ? r[1].items || [] : []; cm.err = ""; paint();
+    }).catch(function (e) { cm.err = "불러오지 못했습니다 (" + e.message + ")"; paint(); });
+  }
+  function cmBig(title, rows) {
+    var ov = el("div", "vote-big");
+    function close() { ov.remove(); document.removeEventListener("keydown", esc); }
+    function esc(e) { if (e.key === "Escape") close(); }
+    var card = el("div", "vb-card"), top = el("div", "vb-top");
+    top.appendChild(el("span", "vb-k", pick + "반 · " + uname(cm.unit)));
+    var b2 = el("button", "btn", "닫기 (Esc)"); b2.type = "button"; b2.addEventListener("click", close); top.appendChild(b2);
+    card.appendChild(top); card.appendChild(el("h2", "display", title));
+    rows.forEach(function (r) { var p = el("p", "vb-q"); p.style.fontSize = r.big ? "28px" : "20px"; p.style.lineHeight = "1.6"; p.textContent = r.t; card.appendChild(p); });
+    ov.appendChild(card); document.body.appendChild(ov); document.addEventListener("keydown", esc);
+  }
+  function paintCommunity() {
+    var p = el("div", "panel");
+    p.appendChild(el("h2", "display", "익명 돌려 읽기 · 궁금한 것 게시판"));
+    var sub = el("p", "sub");
+    sub.innerHTML = "학생이 ‘우리 반’ 탭에서 <b>정리하기의 한 문장</b>을 돌려 읽기에 내면, 친구 두 명씩 이름 없이 읽고 점검(" + CM_RUB.join(" · ") + ")과 좋은 점·고칠 점을 남깁니다. "
+      + "<b>궁금한 것 게시판</b>은 첫 이야기 끝에서 모으고 정리하기에서 ‘이제 답할 수 있어요’로 돌아봅니다. 알맞지 않은 글은 <b>숨기기</b>를 누르세요(학생 화면에서 사라집니다). 📺 크게 띄우기에는 이름이 나오지 않습니다.";
+    p.appendChild(sub);
+    if (!pick) { p.appendChild(el("p", "empty", "위에서 반 카드를 하나 누르면 시작할 수 있습니다.")); out.appendChild(p); return; }
+    var row = el("div", "keyrow"), l1 = el("label", null, "단원"), s1 = document.createElement("select");
+    var list = UL.filter(function (r) { return !subj || r[1] === subj; });
+    list.forEach(function (r) { var o = document.createElement("option"); o.value = r[0]; o.textContent = (subj ? "" : r[1] + " · ") + r[2]; if (cm.unit === r[0]) o.selected = true; s1.appendChild(o); });
+    if (!cm.unit || !list.some(function (r) { return r[0] === cm.unit; })) cm.unit = list.length ? list[0][0] : null;
+    s1.addEventListener("change", function () { cm.unit = s1.value; cm.peer = cm.q = null; paint(); });
+    l1.appendChild(s1); row.appendChild(l1);
+    var b = el("button", "btn primary", cm.peer ? "다시 불러오기" : "불러오기"); b.type = "button"; b.addEventListener("click", function () { loadCm(); }); row.appendChild(b);
+    if (cm.err) row.appendChild(el("span", "msg", cm.err));
+    p.appendChild(row);
+    if (cm.peer) {
+      p.appendChild(el("h3", null, "🔁 돌려 읽기 — 낸 글 " + cm.peer.length + "편"));
+      if (!cm.peer.length) p.appendChild(el("p", "empty", "이 단원에서 돌려 읽기에 낸 글이 아직 없습니다."));
+      var box = el("div", "glance");
+      cm.peer.slice().sort(function (a, c) { return c.n - a.n; }).forEach(function (it) {
+        var bx = el("div", "gl-box"); if (it.hide) bx.style.opacity = ".5";
+        bx.appendChild(el("h4", null, it.nick + " · 평가 " + it.n + "명" + (it.hide ? " · 숨김" : "")));
+        var tx = el("p", "q"); tx.style.color = "var(--ink)"; tx.style.fontSize = "14px"; tx.textContent = it.text; bx.appendChild(tx);
+        if (it.n) bx.appendChild(el("p", "q", CM_RUB.map(function (t, i) { return t + " " + it.sum[i] + "/" + it.n; }).join(" · ")));
+        if (it.good.length || it.fix.length) {
+          var dt = document.createElement("details"); dt.appendChild(el("summary", null, "친구들의 한 줄 (" + (it.good.length + it.fix.length) + ")"));
+          it.good.forEach(function (g) { dt.appendChild(el("p", "q", "👍 " + g)); }); it.fix.forEach(function (f) { dt.appendChild(el("p", "q", "🔧 " + f)); });
+          bx.appendChild(dt);
+        }
+        var br = el("div", "btn-row");
+        var hb = el("button", "btn", it.hide ? "다시 보이기" : "숨기기"); hb.type = "button";
+        hb.addEventListener("click", function () { hb.disabled = true; cmCall("peerHide", { id: it.id, hide: !it.hide }).then(function () { loadCm(true); }); });
+        var bb = el("button", "btn", "📺 크게 띄우기"); bb.type = "button";
+        bb.addEventListener("click", function () { cmBig("함께 고쳐 쓰기", [{ t: it.text, big: true }, { t: "점검: " + CM_RUB.join(" · ") + " — 무엇을 더하면 더 좋은 글이 될까요?" }]); });
+        br.appendChild(hb); br.appendChild(bb); bx.appendChild(br);
+        box.appendChild(bx);
+      });
+      p.appendChild(box);
+    }
+    if (cm.q) {
+      var qs = cm.q.slice().sort(function (a, c) { return (c.same - a.same) || (a.t - c.t); });
+      var h3 = el("h3", null, "❓ 궁금한 것 게시판 — 질문 " + qs.length + "개");
+      p.appendChild(h3);
+      if (!qs.length) p.appendChild(el("p", "empty", "이 단원에서 남긴 질문이 아직 없습니다."));
+      else {
+        var big = el("button", "btn", "📺 질문 크게 띄우기"); big.type = "button";
+        big.addEventListener("click", function () { cmBig("우리 반이 궁금한 것", qs.filter(function (q) { return !q.hide; }).slice(0, 10).map(function (q) { return { t: "🙋 " + (q.same + 1) + "  " + q.text + (q.solved ? "  (✓ " + q.solved + ")" : "") }; })); });
+        p.appendChild(big);
+        var ul = el("div", "feed");
+        qs.forEach(function (q) {
+          var r = el("div", "feed-row"); if (q.hide) r.style.opacity = ".5";
+          r.appendChild(el("span", "who", q.nick));
+          r.appendChild(el("span", "u", q.text));
+          r.appendChild(el("span", null, "🙋 " + (q.same + 1) + " · ✓ " + q.solved + (q.hide ? " · 숨김" : "")));
+          var hb2 = el("button", "btn", q.hide ? "다시 보이기" : "숨기기"); hb2.type = "button";
+          hb2.addEventListener("click", function () { hb2.disabled = true; cmCall("qHide", { id: q.id, hide: !q.hide }).then(function () { loadCm(true); }); });
+          r.appendChild(hb2); ul.appendChild(r);
+        });
+        p.appendChild(ul);
+      }
+    }
+    out.appendChild(p);
+  }
+  function paintGroups(evrows) {
+    var p = el("div", "panel");
+    p.appendChild(el("h2", "display", "반 한눈에 · 모둠 편성 · 먼저 가 볼 학생"));
+    var sub = el("p", "sub");
+    sub.innerHTML = "수업 흐름 예: 개인 탐구 15분 → 학생이 <b>우리 반</b> 탭에서 한 번 올리기 → 여기서 모둠 편성 → 모둠 20분 → 전체 공유 5분 → 개인 정리 10분. "
+      + "첫 추리에서 <b>서로 다른 보기를 고른 학생</b>이 한 모둠에 섞이도록 나눕니다. 학생이 쓴 글은 불러오지 않습니다.";
+    p.appendChild(sub);
+    if (!pick) { p.appendChild(el("p", "empty", "위에서 반 카드를 하나 누르면 시작할 수 있습니다.")); out.appendChild(p); return; }
+    var units = []; (evrows || []).forEach(function (r) { if (r.cls === pick && r.ev && !units.some(function (u) { return u[0] === r.unit; })) units.push([r.unit, r.label]); });
+    if (!units.length) { p.appendChild(el("p", "empty", pick + "반에는 아직 효과 기록이 담긴 올리기가 없습니다.")); out.appendChild(p); return; }
+    var row = el("div", "keyrow");
+    var l1 = el("label", null, "단원"), s1 = document.createElement("select");
+    units.forEach(function (u) { var o = document.createElement("option"); o.value = u[0]; o.textContent = u[1] || u[0]; if (grp.unit === u[0]) o.selected = true; s1.appendChild(o); });
+    if (!grp.unit || !units.some(function (u) { return u[0] === grp.unit; })) grp.unit = units[0][0];
+    s1.addEventListener("change", function () { grp.unit = s1.value; grp.list = null; paint(); });
+    l1.appendChild(s1); row.appendChild(l1);
+    var l2 = el("label", null, "모둠 인원"), s2 = document.createElement("select");
+    [3, 4, 5].forEach(function (n) { var o = document.createElement("option"); o.value = n; o.textContent = n + "명 안팎"; if (grp.size === n) o.selected = true; s2.appendChild(o); });
+    s2.addEventListener("change", function () { grp.size = +s2.value; paint(); });
+    l2.appendChild(s2); row.appendChild(l2);
+    var b1 = el("button", "btn primary", grp.list ? "다시 불러오기" : "학생별 기록 불러오기"); b1.type = "button"; b1.addEventListener("click", loadStudents); row.appendChild(b1);
+    if (grp.list && grp.list.length) { var b2 = el("button", "btn", "다른 조합으로 섞기"); b2.type = "button"; b2.addEventListener("click", function () { grp.seed++; paint(); }); row.appendChild(b2); }
+    if (grp.err) row.appendChild(el("span", "msg", grp.err));
+    p.appendChild(row);
+    if (grp.list) {
+      var L = grp.list;
+      if (!L.length) { p.appendChild(el("p", "empty", "이 단원을 올린 학생이 없습니다.")); out.appendChild(p); return; }
+      paintGlance(p, L, grp.unit);
+      /* 먼저 가 볼 학생: 이야기 진행이 가장 더딘 순, 힌트를 많이 본 순 */
+      var slow = L.slice().sort(function (a, b) { return progress(a) - progress(b) || ((b.h || [0, 0, 0])[2] - (a.h || [0, 0, 0])[2]); }).slice(0, Math.min(5, L.length));
+      var h3 = el("h3", null, "먼저 가 볼 학생"); h3.style.cssText = "font-size:15px;margin:16px 0 6px"; p.appendChild(h3);
+      var feed = el("div", "feed");
+      slow.forEach(function (s) {
+        var r = el("div", "feed-row"); r.appendChild(el("span", "who", s.nick));
+        var st = []; Object.keys(s.e).forEach(function (k) { var e = s.e[k]; st.push(k + " " + e[0] + "/" + e[1] + (e[2] ? " (" + e[2] + "장면에서 멈춤)" : "")); });
+        r.appendChild(el("span", "u", "이야기 " + Math.round(progress(s) * 100) + "% · " + (st.join(", ") || "기록 없음")));
+        r.appendChild(el("span", null, "실험실 힌트 " + (s.h ? s.h[2] : 0) + "단계 · 올린 때 " + ago(s.t)));
+        feed.appendChild(r);
+      });
+      p.appendChild(feed);
+      /* 모둠 */
+      var G = makeGroups(L, grp.size);
+      var h4 = el("h3", null, "모둠 " + G.groups.length + "개 (" + L.length + "명)"); h4.style.cssText = "font-size:15px;margin:18px 0 6px"; p.appendChild(h4);
+      var gg = el("div", "cls-grid"), txt = [];
+      G.groups.forEach(function (m, i) {
+        var c = el("div", "cls-card"); c.style.cursor = "default";
+        c.appendChild(el("div", "name", (i + 1) + "모둠"));
+        var nums = el("div", "nums");
+        nums.innerHTML = m.map(function (s) {
+          var chips = G.keys.map(function (k) { var g = s.g[k]; return g ? (g[1] != null ? MK.charAt(g[1]) || "?" : "") + (g[0] ? "✓" : "✗") : "·"; }).join(" ");
+          return "<b>" + s.nick.replace(/[<>&]/g, "") + "</b> " + chips;
+        }).join("<br>");
+        c.appendChild(nums); gg.appendChild(c);
+        txt.push((i + 1) + "모둠: " + m.map(function (s) { return s.nick; }).join(", "));
+      });
+      p.appendChild(gg);
+      p.appendChild(el("p", "sub", "이름 옆 기호는 첫 추리 문항(" + G.keys.join(", ") + ")마다 고른 보기와 맞음(✓)·어긋남(✗)입니다. 보기는 학생마다 섞여 나오지만 기호(㉠㉡㉢)는 따라가므로 학생 화면의 기호와 같습니다."));
+      var b3 = el("button", "btn", "📋 모둠 명단 복사"); b3.type = "button";
+      b3.addEventListener("click", function () { var s = txt.join(String.fromCharCode(10)); try { navigator.clipboard.writeText(s); b3.textContent = "복사했습니다"; } catch (e) { window.prompt("복사하세요", s); } });
+      p.appendChild(b3);
+    }
+    out.appendChild(p);
+  }
+
+  function paint() {
+    out.innerHTML = "";
+    var classes = data.classes || [], cells = data.cells || [], units = data.units || {}, recent = data.recent || [];
+    if (!classes.length) {
+      note('<h2 class="display">아직 올라온 기록이 없습니다</h2>'
+         + '<p class="sub">학생이 단원의 <b>우리 반</b> 탭에서 한 번 올리면 여기에 나타납니다.</p>');
+      return;
+    }
+
+    /* 0) 과목 고르기 */
+    var have = {}, total = 0;
+    cells.forEach(function (x) { var sj = subjOf(x.unit); have[sj] = (have[sj] || 0) + x.n; total += x.n; });
+    if (subj && !have[subj]) subj = null;
+    var p0 = el("div", "panel");
+    p0.appendChild(el("h2", "display", "과목"));
+    p0.appendChild(el("p", "sub", "과목을 고르면 아래 모든 표가 그 과목의 단원과 반만 보여 줍니다. 괄호 안은 올라온 기록 수입니다."));
+    var row0 = el("div", "subj-row");
+    [[null, "전체", total]].concat(SUBJS.concat(have["기타"] ? ["기타"] : []).map(function (sj) { return [sj, sj, have[sj] || 0]; })).forEach(function (c) {
+      var b = el("button", "chip" + (subj === c[0] ? " on" : "")); b.type = "button";
+      b.textContent = c[1]; var cn = el("span", "c", c[2] ? String(c[2]) : "0"); b.appendChild(cn);
+      if (c[0] && !c[2]) b.disabled = true;
+      b.addEventListener("click", function () { setSubj(c[0]); });
+      row0.appendChild(b);
+    });
+    p0.appendChild(row0);
+    out.appendChild(p0);
+
+    /* 과목을 골랐으면 그 과목을 올린 반만 — 반마다 그 과목의 학생 수(뒷단이 bySubj를 주면 그것으로, 아니면 칸에서 셈) */
+    if (subj) {
+      var bs = (data.bySubj || []).filter(function (x) { return x.subj === subj; });
+      if (!bs.length) {
+        var tmp = {};
+        cells.forEach(function (x) { if (subjOf(x.unit) !== subj) return; var t = tmp[x.cls] || (tmp[x.cls] = { cls: x.cls, students: null, units: 0, last: null, n: 0 }); t.units++; t.n += x.n; if (x.last && (t.last === null || x.last > t.last)) t.last = x.last; });
+        bs = Object.keys(tmp).map(function (k) { return tmp[k]; });
+      }
+      bs.sort(function (a, b) { return a.cls < b.cls ? -1 : (a.cls > b.cls ? 1 : 0); });
+      classes = bs;
+      if (pick && !classes.some(function (c) { return c.cls === pick; })) pick = null;
+    }
+
+    /* 1) 반 카드 */
+    var p1 = el("div", "panel");
+    p1.appendChild(el("h2", "display", subj ? subj + " · 반" : "반"));
+    var s1 = el("p", "sub", "반을 누르면 아래 표에서 그 반만 봅니다. 다시 누르면 전체로 돌아옵니다.");
+    p1.appendChild(s1);
+    var g = el("div", "cls-grid");
+    classes.forEach(function (c) {
+      var card = el("div", "cls-card" + (pick === c.cls ? " on" : ""));
+      card.appendChild(el("div", "name", c.cls));
+      var n = el("div", "nums");
+      n.innerHTML = (c.students == null ? "기록 <b>" + c.n + "</b>건" : "학생 <b>" + c.students + "</b>명") + " · 단원 <b>" + c.units + "</b>개<br>마지막 " + (when(c.last) || "-") + " (" + ago(c.last) + ")";
+      card.appendChild(n);
+      card.addEventListener("click", function () { pick = (pick === c.cls) ? null : c.cls; paint(); });
+      g.appendChild(card);
+    });
+    p1.appendChild(g);
+    out.appendChild(p1);
+
+    /* 2) 단원 × 반 표 */
+    var shown = pick ? classes.filter(function (c) { return c.cls === pick; }) : classes;
+    var byUnit = {};
+    cells.forEach(function (x) {
+      if (pick && x.cls !== pick) return;
+      if (!inSubj(x.unit)) return;
+      if (!byUnit[x.unit]) byUnit[x.unit] = { unit: x.unit, label: uname(x.unit, units[x.unit]), by: {}, last: null, sum: 0 };
+      byUnit[x.unit].by[x.cls] = x;
+      byUnit[x.unit].sum += x.n;
+      if (x.last && (byUnit[x.unit].last === null || x.last > byUnit[x.unit].last)) byUnit[x.unit].last = x.last;
+    });
+    /* 과목을 골랐으면 아직 아무도 올리지 않은 단원도 빈 줄로 보여 주고, 교과서 순서로 늘어놓는다 */
+    if (subj) UL.forEach(function (r) { if (r[1] === subj && !byUnit[r[0]]) byUnit[r[0]] = { unit: r[0], label: r[2], by: {}, last: null, sum: 0 }; });
+    var rows = Object.keys(byUnit).map(function (u) { return byUnit[u]; });
+    if (subj) rows.sort(function (a, b) { return (UMAP[a.unit] ? UMAP[a.unit].i : 1e4) - (UMAP[b.unit] ? UMAP[b.unit].i : 1e4); });
+    else rows.sort(function (a, b) { return (b.last || 0) - (a.last || 0); });
+
+    var p2 = el("div", "panel");
+    p2.appendChild(el("h2", "display", "단원별 · 반별"));
+    p2.appendChild(el("p", "sub", "칸의 숫자는 그 단원을 올린 학생 수입니다." + (scope() ? "  지금은 " + scope() + "만 보고 있습니다." : "")));
+    var sc = el("div", "tbl-scroll"), tb = document.createElement("table");
+    tb.className = "act";
+    var thead = document.createElement("thead"), tr = document.createElement("tr");
+    var th0 = document.createElement("th"); th0.className = "unit"; th0.textContent = "단원"; tr.appendChild(th0);
+    shown.forEach(function (c) { var th = document.createElement("th"); th.textContent = c.cls; tr.appendChild(th); });
+    var thS = document.createElement("th"); thS.textContent = "합"; tr.appendChild(thS);
+    var thT = document.createElement("th"); thT.textContent = "마지막"; tr.appendChild(thT);
+    thead.appendChild(tr); tb.appendChild(thead);
+    var tbody = document.createElement("tbody");
+    rows.forEach(function (r) {
+      var t2 = document.createElement("tr");
+      var td0 = document.createElement("td"); td0.className = "unit"; td0.textContent = r.label; t2.appendChild(td0);
+      shown.forEach(function (c) {
+        var x = r.by[c.cls], td = document.createElement("td");
+        td.className = x ? "n" : "z"; td.textContent = x ? x.n : "·";
+        if (x) td.title = c.cls + "반 · " + when(x.last);
+        t2.appendChild(td);
+      });
+      var tdS = document.createElement("td"); tdS.className = "n"; tdS.textContent = r.sum; t2.appendChild(tdS);
+      var tdT = document.createElement("td"); tdT.textContent = ago(r.last); t2.appendChild(tdT);
+      tbody.appendChild(t2);
+    });
+    tb.appendChild(tbody); sc.appendChild(tb); p2.appendChild(sc);
+    out.appendChild(p2);
+
+    /* 3) 최근 활동 */
+    var p3 = el("div", "panel");
+    p3.appendChild(el("h2", "display", "최근 활동"));
+    p3.appendChild(el("p", "sub", "올릴 때마다 한 줄씩 쌓입니다. 덮어쓰기와 상관없이 남는 기록입니다."));
+    var feed = el("div", "feed"), list = recent.filter(function (r) { return (!pick || r.cls === pick) && inSubj(r.unit); }).slice(0, 40);
+    if (!list.length) { p3.appendChild(el("p", "empty", "아직 없습니다.")); }
+    list.forEach(function (r) {
+      var row = el("div", "feed-row" + (r.kind === "처음" ? " first" : ""));
+      row.appendChild(el("span", "cls", r.cls));
+      row.appendChild(el("span", "who", r.nick));
+      row.appendChild(el("span", "u", r.label || r.unit));
+      row.appendChild(el("span", null, r.kind + " · " + r.n + "칸"));
+      row.appendChild(el("span", "t", when(r.t) + " (" + ago(r.t) + ")"));
+      feed.appendChild(row);
+    });
+    p3.appendChild(feed);
+    out.appendChild(p3);
+    paintVotes();
+    paintCommunity();
+    paintEv();
+  }
+
+  $("go").addEventListener("click", load);
+  $("key").addEventListener("keydown", function (e) { if (e.key === "Enter") load(); });
+  $("forget").addEventListener("click", function () {
+    try { localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); } catch (e) {}
+    $("key").value = ""; out.innerHTML = ""; msg.textContent = "잊었습니다."; msg.className = "msg";
+  });
+  if (URL_ && $("key").value) load();
+})();
+</script>
+</body>
+</html>

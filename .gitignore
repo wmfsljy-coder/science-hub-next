@@ -49,3 +49,9 @@ next-env.d.ts
 /public/engine/
 /public/hub-assets/
 /content/units-sync.json
+/public/class/
+/public/records/
+/public/maps/
+/public/phet/
+/content/resources.json
+/check-report/

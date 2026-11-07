@@ -8,6 +8,10 @@ import path from "node:path";
 
 export const OLD_HUB = "https://wmfsljy-coder.github.io/science-teacher-hub/";
 export const GITHUB = "https://github.com/wmfsljy-coder/science-hub-next";
+/** basePath (일반 <a> 링크·정적 파일 주소에 붙임) */
+export const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+/** 학생에게 주는 절대 주소 바탕(QR) */
+export const SITE = "https://wmfsljy-coder.github.io/science-hub-next";
 
 export type FlowStep = { label: string; kind: "intro" | "story" | "step" };
 export type Standard = { code: string; text: string };
@@ -35,6 +39,10 @@ export type Unit = {
   play: string;
   /** 예전 과목 저장소 주소 */
   oldUrl: string;
+  /** 진도 열쇠: localStorage "sth-<key>" (episodes.js 의 sthUnit 값) */
+  key: string;
+  /** 소단원 [번호, 이름] — QR 모음용 */
+  sections: [string, string][];
   thumb: string | null;
   thumbAlt: string;
   counts: Counts;
@@ -98,4 +106,26 @@ export function generatedAt(): string {
 export function assetUrl(src: string | null): string | null {
   if (!src) return null;
   return src.startsWith("/") ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${src}` : src;
+}
+
+/* 자료실(옛 허브 resources/ 표를 빌드 때 읽은 것) */
+export type ResourceRow = {
+  s: string;
+  g: string;
+  repo: string;
+  unit: string;
+  play: string;
+  unitLabel: string;
+  tab: string;
+  kind: string;
+  word: string;
+  links: { href: string; text: string }[];
+  open: string;
+  note: string;
+};
+
+export function getResources(): { intro: string; rows: ResourceRow[] } {
+  const file = path.join(process.cwd(), "content", "resources.json");
+  if (!fs.existsSync(file)) return { intro: "", rows: [] };
+  return JSON.parse(fs.readFileSync(file, "utf8"));
 }

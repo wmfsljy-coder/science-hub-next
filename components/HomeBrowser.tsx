@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useDeferredValue, useMemo, useState } from "react";
 import { tone, card } from "@/lib/ui";
 import Thumb from "./Thumb";
+import { CourseProgress, DoneBadge } from "./Progress";
 
 export type CourseCardData = {
   repo: string;
@@ -15,6 +16,7 @@ export type CourseCardData = {
   color: string;
   description: string;
   unitCount: number;
+  keys: string[];
   thumbs: (string | null)[];
 };
 
@@ -31,6 +33,7 @@ export type SearchItem = {
   summary: string;
   url: string;
   play: string;
+  unitKey: string;
   thumb: string | null;
   thumbAlt: string;
   codes: string[];
@@ -169,8 +172,9 @@ export default function HomeBrowser({ courses, items }: { courses: CourseCardDat
               <li key={it.id} className={`${card} flex gap-3 p-3`}>
                 <Thumb src={it.thumb} alt="" className="h-24 w-24 shrink-0 rounded-2xl" />
                 <div className="flex min-w-0 flex-1 flex-col">
-                  <span className={`text-sm font-bold ${t.text}`}>
+                  <span className={`flex flex-wrap items-center gap-2 text-sm font-bold ${t.text}`}>
                     {it.courseName} · {it.chapter}
+                    <DoneBadge unitKey={it.unitKey} />
                   </span>
                   <Link
                     href={`/u/${it.repo}/${it.slug}/plan/`}
@@ -238,6 +242,7 @@ export default function HomeBrowser({ courses, items }: { courses: CourseCardDat
                       </div>
                     </div>
                     <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{c.description}</p>
+                    <CourseProgress keys={c.keys} barClass={t.bar} />
                     <div className="mt-4 flex items-center gap-3">
                       <div className="flex -space-x-3" aria-hidden>
                         {c.thumbs.map((s, i) => (

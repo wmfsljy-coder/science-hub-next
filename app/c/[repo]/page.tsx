@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Counts from "@/components/Counts";
+import { StudentGate } from "@/components/DeviceMode";
 import Thumb from "@/components/Thumb";
-import { assetUrl, getCourse, getCourses, OLD_HUB, type Unit } from "@/lib/content";
+import { assetUrl, BASE, getCourse, getCourses, type Unit } from "@/lib/content";
 import { btnPrimary, btnSecondary, card, tone } from "@/lib/ui";
 
 export const dynamicParams = false;
@@ -34,7 +35,8 @@ export default async function CoursePage({ params }: PageProps<"/c/[repo]">) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-16 pt-6 sm:px-6 sm:pt-10">
-      <nav aria-label="위치" className="mb-4 text-base">
+      <StudentGate subj={`${BASE}/u/${course.repo}/`} />
+      <nav aria-label="위치" className="mb-4 text-base" data-teacher>
         <Link href="/" className="inline-flex min-h-11 items-center font-semibold text-slate-600 hover:text-teal-700 dark:text-slate-300 dark:hover:text-teal-300">
           ← 모든 과목
         </Link>
@@ -60,12 +62,12 @@ export default async function CoursePage({ params }: PageProps<"/c/[repo]">) {
             <p className="mt-2 max-w-3xl text-base leading-relaxed text-slate-600 dark:text-slate-300">{course.description}</p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2 border-t border-slate-200 px-5 py-4 dark:border-slate-700 sm:px-7">
+        <div className="flex flex-wrap gap-2 border-t border-slate-200 px-5 py-4 dark:border-slate-700 sm:px-7" data-teacher>
+          <a href={`${BASE}/qr/?s=${encodeURIComponent(course.name)}`} className="inline-flex min-h-11 items-center rounded-xl border-2 border-slate-300 px-3 text-sm font-bold hover:border-teal-600 dark:border-slate-600">
+            📱 이 과목 QR 모음·인쇄
+          </a>
           <a href={course.url} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center rounded-xl border-2 border-slate-300 px-3 text-sm font-bold hover:border-teal-600 dark:border-slate-600">
             예전 과목 화면 ↗
-          </a>
-          <a href={OLD_HUB} className="inline-flex min-h-11 items-center rounded-xl border-2 border-slate-300 px-3 text-sm font-bold hover:border-teal-600 dark:border-slate-600">
-            예전 허브
           </a>
         </div>
       </header>
@@ -99,7 +101,7 @@ export default async function CoursePage({ params }: PageProps<"/c/[repo]">) {
                   <a href={u.play} className={btnPrimary} aria-label={`${u.title} 수업 열기`}>
                     수업 열기
                   </a>
-                  <Link href={`/u/${course.repo}/${u.slug}/plan/`} className={btnSecondary}>
+                  <Link href={`/u/${course.repo}/${u.slug}/plan/`} className={btnSecondary} data-teacher>
                     지도안·QR
                   </Link>
                 </div>

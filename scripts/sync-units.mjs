@@ -63,6 +63,8 @@ function enginePatches(base) {
     { file: "review.js", from: '"/science-teacher-hub/assets/review-"', to: `"${base}/hub-assets/review-"`, need: true },
     /* 교사 기기의 '← 허브' 링크 → 새 사이트 첫 화면 */
     { file: "theme.js", from: 'a.href = "https://wmfsljy-coder.github.io/science-teacher-hub/";', to: `a.href = "${base}/";`, need: true },
+    /* 과목 첫 화면의 '과목 QR 모음·인쇄' → 새 사이트 QR 모음 */
+    { file: "theme.js", from: "https://wmfsljy-coder.github.io/science-teacher-hub/qr/?s=", to: `${base}/qr/?s=`, need: true },
     /* 과목 전체 QR(?all=1) 학생 울타리: 과목 = /science-hub-next/u/<저장소>/ */
     {
       file: "theme.js",
@@ -73,9 +75,22 @@ function enginePatches(base) {
   ];
 }
 
+/* 우리 Pages 주소로 가는 링크(href) → 이 사이트 안으로. 주소 뒤 ?·# 는 그대로 둔다.
+   과목 저장소 → /u/<저장소>/<단원>/ 또는 /c/<저장소>/, 옛 허브 화면 → 새 화면, 껍데기 저장소 → fallback */
+const HUB_PAGES = { "": "/", "resources/": "/resources/", "qr/": "/qr/", "class/": "/class/", "records/": "/records/", "maps/": "/maps/", "phet/": "/resources/#PhET" };
+export function rewriteOwnLinks(html, { base, repoSet, fallback }) {
+  return html.replace(/(href=")https:\/\/wmfsljy-coder\.github\.io\/([\w-]+)\/((?:[\w-]+\/)?)(?:index\.html)?(?=["?#])/g, (all, pre, r, rest) => {
+    const u = rest.replace(/\/$/, "");
+    if (repoSet.has(r)) return u && /^\d/.test(u) ? `${pre}${base}/u/${r}/${u}/` : `${pre}${base}/c/${r}/`;
+    if (r === "science-teacher-hub" && rest in HUB_PAGES) return `${pre}${base}${HUB_PAGES[rest]}`;
+    if (SHELLS.has(r) && !u) return `${pre}${fallback}`;
+    return all;
+  });
+}
+
 /* share-config.js 복사본: 이 사이트 호스트를 허용 목록에 두고, localhost·127.0.0.1 은 뺀다
    (내 컴퓨터에서 돌린 검사가 진짜 시트에 쓰지 않게). 공유 주소·반 목록·지도 키는 그대로. */
-function patchShareConfig(src, repo, warn) {
+export function patchShareConfig(src, repo, warn) {
   const re = /window\.STH_SHARE_HOSTS\s*=\s*\[([^\]]*)\]/;
   const m = src.match(re);
   if (!m) {
@@ -158,6 +173,7 @@ export function syncUnits({ root, contentDir, courses, base }) {
   const repoSet = new Set(courses.map((c) => c.repo));
   let unitCount = 0;
   let fileCount = 0;
+  let resFix = 0;
   const report = [];
   for (const c of courses) {
     const rdir = path.join(contentDir, c.repo);
@@ -173,9 +189,10 @@ export function syncUnits({ root, contentDir, courses, base }) {
       repoVer[name] = hash(text);
     }
     const coursePage = `${base}/c/${c.repo}/`;
+    /* /u/<저장소>/ → 과목 페이지(?all=1 같은 주소 뒤 글자는 그대로 넘김) */
     fs.writeFileSync(
       path.join(outR, "index.html"),
-      `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${c.name}</title><meta http-equiv="refresh" content="0; url=${coursePage}"><link rel="canonical" href="${coursePage}"></head><body><p><a href="${coursePage}">${c.name} 단원 목록으로 가기</a></p></body></html>\n`,
+      `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${c.name}</title><script>location.replace(${JSON.stringify(coursePage)} + location.search + location.hash)</script><meta http-equiv="refresh" content="0; url=${coursePage}"><link rel="canonical" href="${coursePage}"></head><body><p><a href="${coursePage}">${c.name} 단원 목록으로 가기</a></p></body></html>\n`,
     );
 
     const slugs = fs
@@ -186,6 +203,15 @@ export function syncUnits({ root, contentDir, courses, base }) {
       const ud = path.join(rdir, slug);
       const outD = path.join(outR, slug);
       fileCount += copyTree(ud, outD, SKIP_UNIT);
+      /* 단원 자료 js 속 옛 자료실 주소(대부분 주석) → 새 자료실 */
+      for (const f of fs.readdirSync(outD).filter((n) => n.endsWith(".js"))) {
+        const fp = path.join(outD, f);
+        const s = fs.readFileSync(fp, "utf8");
+        if (s.includes("science-teacher-hub/resources/")) {
+          fs.writeFileSync(fp, s.split("https://wmfsljy-coder.github.io/science-teacher-hub/resources/").join(`${base}/resources/`).split("science-teacher-hub/resources/").join(`${base.slice(1)}/resources/`));
+          resFix++;
+        }
+      }
       let html = fs.readFileSync(path.join(ud, "index.html"), "utf8");
       const used = [];
       /* ../assets/<파일> → 공용 엔진 또는 저장소별 사본 */
@@ -202,11 +228,8 @@ export function syncUnits({ root, contentDir, courses, base }) {
       if (at < 0) errors.push(`${c.repo}/${slug}: theme.js 를 못 찾음`);
       else html = html.slice(0, at) + tag + html.slice(at);
       /* 우리 Pages 주소로 가는 링크 → 이 사이트 안으로 */
-      html = html.replace(/(href=")https:\/\/wmfsljy-coder\.github\.io\/([\w-]+)\/(?:([\w-]+)\/)?(index\.html)?(?=["?#])/g, (all, pre, r, u) => {
-        if (repoSet.has(r)) return u && /^\d/.test(u) ? `${pre}${base}/u/${r}/${u}/` : `${pre}${base}/c/${r}/`;
-        if (SHELLS.has(r) && !u) return `${pre}${coursePage}`;
-        return all; /* science-teacher-hub/resources/ 같은 허브 화면은 2단계 전까지 옛 주소 그대로 */
-      });
+      html = rewriteOwnLinks(html, { base, repoSet, fallback: coursePage });
+      if (html.includes("science-teacher-hub/")) errors.push(`${c.repo}/${slug}: index.html 에 옛 허브 주소가 남음`);
       fs.writeFileSync(path.join(outD, "index.html"), html);
 
       /* 바꾼 페이지가 가리키는 우리 사이트 파일이 다 있는지 확인 */
@@ -222,7 +245,7 @@ export function syncUnits({ root, contentDir, courses, base }) {
   }
 
   const engineList = Object.keys(engine).sort();
-  console.log(`단원 화면: ${unitCount}개 단원, 단원 파일 ${fileCount}개 → public/u/ · 엔진 ${engineList.length}개 → public/engine/ · 허브 자료 ${hubCount}개 → public/hub-assets/`);
+  console.log(`단원 화면: ${unitCount}개 단원, 단원 파일 ${fileCount}개 → public/u/ · 엔진 ${engineList.length}개 → public/engine/ · 허브 자료 ${hubCount}개 → public/hub-assets/ · 옛 자료실 주소 바꾼 js ${resFix}개`);
   if (warnings.length) console.log(`  경고 ${warnings.length}건(위 ⚠ 참고)`);
   if (errors.length) {
     for (const e of errors) console.error(`  ✗ ${e}`);

@@ -14,6 +14,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { syncUnits } from "./sync-units.mjs";
+import { syncHub } from "./sync-hub.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OWNER = "wmfsljy-coder";
@@ -29,7 +30,11 @@ if (doClone) {
   /* 과목 저장소 + 엔진이 부르는 허브 자료(review-*.js 등)가 있는 science-teacher-hub */
   for (const c of [...courses, { repo: "science-teacher-hub" }]) {
     const dest = path.join(contentDir, c.repo);
-    if (fs.existsSync(path.join(dest, "index.html"))) continue;
+    if (fs.existsSync(path.join(dest, "index.html"))) {
+      /* 이 프로젝트 안(.content)에 받아 둔 사본만 새로 당김(사람이 작업하는 상위 폴더 clone 은 건드리지 않음) */
+      if (dest.startsWith(ROOT + path.sep)) execFileSync("git", ["-C", dest, "pull", "--ff-only", "-q"], { stdio: "inherit" });
+      continue;
+    }
     console.log(`받는 중: ${c.repo}`);
     execFileSync("git", ["clone", "--depth", "1", `https://github.com/${OWNER}/${c.repo}.git`, dest], { stdio: "inherit" });
   }
@@ -134,6 +139,15 @@ try {
 const thumbDir = path.join(ROOT, "public", "thumbs");
 fs.mkdirSync(thumbDir, { recursive: true });
 
+/* 소단원 목록(QR 모음용) — science-teacher-hub/data/sections.js: { "저장소/단원": [["01","이름"], …] } */
+let SECTIONS = {};
+try {
+  const s = read(path.join(contentDir, "science-teacher-hub", "data", "sections.js"));
+  SECTIONS = JSON.parse(s.slice(s.indexOf("{"), s.lastIndexOf("}") + 1));
+} catch (e) {
+  console.warn(`소단원 목록을 읽지 못했습니다: ${e.message}`);
+}
+
 const out = { generatedAt: new Date().toISOString(), courses: [] };
 let unitTotal = 0;
 
@@ -162,6 +176,9 @@ for (const c of courses) {
     const chapter = card.chapter || (lesson.h1.match(/\s([ⅠⅡⅢⅣⅤ](?:-\d+)?)\s/) || [])[1] || slug;
 
     const pre = read(path.join(ud, "precheck-items.js"));
+    /* 진도 열쇠: episodes.js 의 sthUnit("…") → localStorage "sth-<열쇠>" (옛 허브 진도 막대와 같은 값) */
+    const key = (read(path.join(ud, "episodes.js")).match(/sthUnit\(\s*"([^"]+)"/) || [])[1] || "";
+    if (!key) console.warn(`진도 열쇠(sthUnit)를 못 찾음: ${c.repo}/${slug}`);
     const hasReal = fs.existsSync(path.join(ud, "real-cases.js"));
     const flow = parseFlow(html, !!pre, hasReal);
 
@@ -201,6 +218,8 @@ for (const c of courses) {
       oldUrl: `${PAGES}/${c.repo}/${slug}/`,
       thumb,
       thumbAlt,
+      key,
+      sections: SECTIONS[`${c.repo}/${slug}`] || [],
       counts: { ...lesson.counts, precheck: (pre.match(/\{\s*id:\s*"p/g) || []).length || null },
       standards: lesson.standards,
       periods: lesson.periods,
@@ -218,4 +237,5 @@ fs.writeFileSync(path.join(ROOT, "content", "generated.json"), JSON.stringify(ou
 console.log(`완료: 과목 ${out.courses.length}개, 단원 ${unitTotal}개 → content/generated.json`);
 
 /* 단원 화면 옮겨 담기 */
-syncUnits({ root: ROOT, contentDir, courses, base: BASE });
+const { engine } = syncUnits({ root: ROOT, contentDir, courses, base: BASE });
+syncHub({ root: ROOT, contentDir, courses, base: BASE, engine });
