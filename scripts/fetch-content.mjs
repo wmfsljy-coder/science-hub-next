@@ -5,6 +5,7 @@
  * - 내용 폴더: 환경 변수 CONTENT_DIR. 없으면 이 프로젝트의 상위 폴더(과학허브)를 씁니다.
  * - `--clone` 을 붙이면 공개 과목 저장소를 CONTENT_DIR 안에 얕게(--depth 1) 받아 옵니다. (GitHub Actions 에서 사용)
  * - 결과: content/generated.json (단원 정보 + 지도안 원문), public/thumbs/*.webp (작은 대표 그림)
+ * - 끝에 scripts/sync-units.mjs 로 단원 화면(엔진·자료·그림)을 public/u/, public/engine/, public/hub-assets/ 에 옮겨 담습니다.
  *
  * 과목 저장소의 파일은 읽기만 하고 절대 고치지 않습니다.
  */
@@ -12,10 +13,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { syncUnits } from "./sync-units.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OWNER = "wmfsljy-coder";
 const PAGES = `https://${OWNER}.github.io`;
+const BASE = "/science-hub-next"; /* next.config.ts 의 basePath 와 같아야 합니다 */
 const courses = JSON.parse(fs.readFileSync(path.join(ROOT, "lib", "courses.json"), "utf8"));
 
 const contentDir = path.resolve(ROOT, process.env.CONTENT_DIR || "..");
@@ -23,7 +26,8 @@ const doClone = process.argv.includes("--clone");
 
 if (doClone) {
   fs.mkdirSync(contentDir, { recursive: true });
-  for (const c of courses) {
+  /* 과목 저장소 + 엔진이 부르는 허브 자료(review-*.js 등)가 있는 science-teacher-hub */
+  for (const c of [...courses, { repo: "science-teacher-hub" }]) {
     const dest = path.join(contentDir, c.repo);
     if (fs.existsSync(path.join(dest, "index.html"))) continue;
     console.log(`받는 중: ${c.repo}`);
@@ -191,7 +195,10 @@ for (const c of courses) {
       part: card.part || "",
       summary: card.summary || "",
       topics: card.topics || [],
-      url: `${PAGES}/${c.repo}/${slug}/`,
+      /* 학생 주소(QR): 이 사이트 안 단원 화면. oldUrl 은 예전 과목 저장소 주소 */
+      url: `${PAGES}${BASE}/u/${c.repo}/${slug}/`,
+      play: `${BASE}/u/${c.repo}/${slug}/`,
+      oldUrl: `${PAGES}/${c.repo}/${slug}/`,
       thumb,
       thumbAlt,
       counts: { ...lesson.counts, precheck: (pre.match(/\{\s*id:\s*"p/g) || []).length || null },
@@ -209,3 +216,6 @@ for (const c of courses) {
 fs.mkdirSync(path.join(ROOT, "content"), { recursive: true });
 fs.writeFileSync(path.join(ROOT, "content", "generated.json"), JSON.stringify(out, null, 1));
 console.log(`완료: 과목 ${out.courses.length}개, 단원 ${unitTotal}개 → content/generated.json`);
+
+/* 단원 화면 옮겨 담기 */
+syncUnits({ root: ROOT, contentDir, courses, base: BASE });

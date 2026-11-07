@@ -31,6 +31,7 @@ export default function Home() {
       title: u.title,
       summary: u.summary,
       url: u.url,
+      play: u.play,
       thumb: assetUrl(u.thumb),
       thumbAlt: u.thumbAlt,
       codes: u.standards.map((s) => s.code),

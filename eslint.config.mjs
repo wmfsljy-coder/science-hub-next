@@ -16,6 +16,11 @@ const eslintConfig = defineConfig([
     ".content/**",
     "content/**",
     "public/thumbs/**",
+    // 빌드 때 옮겨 담는 옛 단원 화면·엔진(과목 저장소 원본 그대로)과 연결 파일
+    "public/u/**",
+    "public/engine/**",
+    "public/hub-assets/**",
+    "legacy/**",
   ]),
 ]);
 

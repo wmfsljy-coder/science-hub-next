@@ -85,7 +85,7 @@ export default async function CoursePage({ params }: PageProps<"/c/[repo]">) {
                   <div className="min-w-0 flex-1">
                     <span className={`text-sm font-extrabold ${t.text}`}>{u.chapter}</span>
                     <h3 className="text-xl font-extrabold leading-snug">
-                      <Link href={`/u/${course.repo}/${u.slug}/`} className="hover:underline focus-visible:outline-4 focus-visible:outline-teal-500">
+                      <Link href={`/u/${course.repo}/${u.slug}/plan/`} className="hover:underline focus-visible:outline-4 focus-visible:outline-teal-500">
                         {u.title}
                       </Link>
                     </h3>
@@ -96,10 +96,10 @@ export default async function CoursePage({ params }: PageProps<"/c/[repo]">) {
                   <Counts counts={u.counts} />
                 </div>
                 <div className="mt-auto grid grid-cols-2 gap-2 p-4 sm:p-5">
-                  <a href={u.url} target="_blank" rel="noopener" className={btnPrimary} aria-label={`${u.title} 수업 열기 (새 탭)`}>
-                    수업 열기 <span aria-hidden>↗</span>
+                  <a href={u.play} className={btnPrimary} aria-label={`${u.title} 수업 열기`}>
+                    수업 열기
                   </a>
-                  <Link href={`/u/${course.repo}/${u.slug}/`} className={btnSecondary}>
+                  <Link href={`/u/${course.repo}/${u.slug}/plan/`} className={btnSecondary}>
                     지도안·QR
                   </Link>
                 </div>

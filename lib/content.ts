@@ -29,7 +29,12 @@ export type Unit = {
   part: string;
   summary: string;
   topics: string[];
+  /** 학생 주소(QR용, 절대 주소): https://…/science-hub-next/u/<저장소>/<단원>/ */
   url: string;
+  /** 이 사이트 안 단원 화면(basePath 포함, 일반 <a> 링크용 — 단원 화면은 Next 페이지가 아니라 옮겨 담은 정적 HTML) */
+  play: string;
+  /** 예전 과목 저장소 주소 */
+  oldUrl: string;
   thumb: string | null;
   thumbAlt: string;
   counts: Counts;

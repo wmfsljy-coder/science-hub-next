@@ -30,6 +30,7 @@ export type SearchItem = {
   title: string;
   summary: string;
   url: string;
+  play: string;
   thumb: string | null;
   thumbAlt: string;
   codes: string[];
@@ -172,7 +173,7 @@ export default function HomeBrowser({ courses, items }: { courses: CourseCardDat
                     {it.courseName} · {it.chapter}
                   </span>
                   <Link
-                    href={`/u/${it.repo}/${it.slug}/`}
+                    href={`/u/${it.repo}/${it.slug}/plan/`}
                     className="text-lg font-extrabold leading-snug hover:underline focus-visible:outline-4 focus-visible:outline-teal-500"
                   >
                     {it.title}
@@ -185,18 +186,16 @@ export default function HomeBrowser({ courses, items }: { courses: CourseCardDat
                   <p className="mt-1 line-clamp-2 text-sm text-slate-600 dark:text-slate-400">{it.summary}</p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     <Link
-                      href={`/u/${it.repo}/${it.slug}/`}
+                      href={`/u/${it.repo}/${it.slug}/plan/`}
                       className="inline-flex min-h-11 items-center rounded-xl border-2 border-slate-300 px-3 text-sm font-bold hover:border-teal-600 focus-visible:outline-4 focus-visible:outline-teal-500 dark:border-slate-600"
                     >
                       지도안·QR
                     </Link>
                     <a
-                      href={it.url}
-                      target="_blank"
-                      rel="noopener"
+                      href={it.play}
                       className="inline-flex min-h-11 items-center rounded-xl bg-teal-700 px-3 text-sm font-bold text-white hover:bg-teal-800 focus-visible:outline-4 focus-visible:outline-teal-500 dark:bg-teal-500 dark:text-slate-950"
                     >
-                      수업 열기 ↗
+                      수업 열기
                     </a>
                   </div>
                 </div>

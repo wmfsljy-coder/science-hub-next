@@ -1,6 +1,6 @@
 # 과학 수업 허브 (science-hub-next)
 
-고등학교 과학 **12과목 44단원**의 인터랙티브 수업 자료를 한곳에서 찾고, 지도안을 읽고, 학생에게 QR로 바로 여는 **교사용 사이트**입니다.
+고등학교 과학 **12과목 44단원**의 인터랙티브 수업을 한곳에서 찾고, 지도안을 읽고, 학생에게 QR로 바로 여는 사이트입니다. 44단원 수업 화면도 이 사이트 안에서 돌아갑니다.
 
 - 바로 열기: https://wmfsljy-coder.github.io/science-hub-next/
 - 예전 허브: https://wmfsljy-coder.github.io/science-teacher-hub/
@@ -10,10 +10,18 @@
 | 화면 | 주소 | 하는 일 |
 |---|---|---|
 | 홈 | `/` | 과목 카드 12개(단원 수 표시), 단원 이름·주제어·성취기준 코드 즉시 검색, 학년·과목군 큰 버튼 거르기 |
-| 과목 | `/c/<저장소>/` | 단원 카드(대표 그림·제목·요약·구성 숫자), 큰 **수업 열기** 버튼(새 탭) |
-| 단원 | `/u/<저장소>/<단원>/` | 지도안(LESSON.md) 전문, 수업 흐름 단계, 차시 한눈에, 성취기준, **학생 입장 QR**(크게 띄우기), 학생용 열기·교사 미리 보기 |
+| 과목 | `/c/<저장소>/` | 단원 카드(대표 그림·제목·요약·구성 숫자), 큰 **수업 열기** 버튼 |
+| 단원 수업 | `/u/<저장소>/<단원>/` | 실제 수업 화면(들어가기·이야기·수준별 문제·응용 실험실·실제 자료·정리하기·우리 반). `?sec=02`, `?open=1`(교사 모두 열기) 그대로 |
+| 지도안·QR | `/u/<저장소>/<단원>/plan/` | 지도안(LESSON.md) 전문, 수업 흐름 단계, 차시 한눈에, 성취기준, **학생 입장 QR**(크게 띄우기), 수업 열기·교사 미리 보기 |
 
-단원 화면 자체(이야기·문제·실험실·우리 반)는 **복사하지 않습니다**. 각 과목 저장소의 GitHub Pages 주소로 연결만 합니다.
+### 단원 수업 화면은 어떻게 돌아가나요
+
+- 빌드할 때 `scripts/sync-units.mjs` 가 과목 저장소의 단원 폴더(자료 js·data·img)와 `index.html` 을 `public/u/<저장소>/<단원>/` 으로 복사합니다. `index.html` 은 엔진 주소만 바꾸고 나머지는 원본 그대로라, 옛 엔진이 원래 순서대로 불립니다.
+- 공용 엔진(theme·scope·kit·story·quiz·lab·share·account·review·peer·qboard·link·precheck·inquiry·measure·debate·aicheck·life-kit·climate-life·qrcode, CSS)은 **한 벌**만 `public/engine/` 에 둡니다(12벌 사본을 비교해 가장 최근 것을 고름, 주소 뒤 `?v=해시`). 엔진 속 `/science-teacher-hub/assets/` 절대 주소는 복사본에서만 `/science-hub-next/hub-assets/` 로 바꿉니다.
+- 저장소마다 다른 `share-config.js`(반 목록·공유 주소)와 `people-data.js`(인물 카드)는 `public/u/<저장소>/assets/` 에 둬서 단원 페이지의 `../assets/` 가 그대로 가리킵니다.
+- 같은 주소 바탕(`wmfsljy-coder.github.io`)이라 학생 진도(localStorage `sth-<단원ID>`)가 옛 주소와 이어집니다.
+- 단원 하나가 페이지 하나라(전체 새로 고침) 단원끼리 같은 전역 이름(예: `REAL_CO2`)이 부딪히지 않습니다.
+- 옛 과목 저장소 주소도 그대로 살아 있습니다(넘겨주기는 아직 안 함).
 
 ## 내용은 어떻게 가져오나요
 
@@ -38,6 +46,8 @@ npm install
 npm run dev          # 개발 서버: http://localhost:3000/science-hub-next/
 npm run build        # 정적 사이트를 out/ 에 만듦 (빌드 전에 내용 모으기가 자동 실행)
 npm run serve        # out/ 을 http://localhost:4173/science-hub-next/ 로 보기
+# 검사할 때: 공유 끄고 옛 점검 도구를 /_tools/ 로
+node scripts/serve-out.mjs 4173 --no-share --tools ..\science-teacher-hub\_tools
 npm run lint
 ```
 

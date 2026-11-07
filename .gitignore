@@ -45,3 +45,7 @@ next-env.d.ts
 /public/thumbs/
 /.content/
 
+/public/u/
+/public/engine/
+/public/hub-assets/
+/content/units-sync.json

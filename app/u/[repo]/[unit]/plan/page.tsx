@@ -15,7 +15,7 @@ export function generateStaticParams() {
   return getCourses().flatMap((c) => c.units.map((u) => ({ repo: c.repo, unit: u.slug })));
 }
 
-export async function generateMetadata({ params }: PageProps<"/u/[repo]/[unit]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/u/[repo]/[unit]/plan">): Promise<Metadata> {
   const { repo, unit } = await params;
   const hit = getUnit(repo, unit);
   return {
@@ -30,7 +30,7 @@ const KIND_STYLE = {
   step: "border-slate-300 bg-white text-slate-800 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100",
 } as const;
 
-export default async function UnitPage({ params }: PageProps<"/u/[repo]/[unit]">) {
+export default async function UnitPage({ params }: PageProps<"/u/[repo]/[unit]/plan">) {
   const { repo, unit: slug } = await params;
   const hit = getUnit(repo, slug);
   if (!hit) notFound();
@@ -73,11 +73,11 @@ export default async function UnitPage({ params }: PageProps<"/u/[repo]/[unit]">
               <Counts counts={unit.counts} size="md" />
             </div>
             <div className="no-print mt-5 grid gap-2 sm:grid-cols-2 lg:max-w-xl">
-              <a href={unit.url} target="_blank" rel="noopener" className={btnPrimary}>
-                학생용 열기 <span aria-hidden>↗</span>
+              <a href={unit.play} className={btnPrimary}>
+                수업 열기(학생 화면)
               </a>
-              <a href={`${unit.url}?open=1`} target="_blank" rel="noopener" className={btnSecondary}>
-                교사 미리 보기 <span aria-hidden>↗</span>
+              <a href={`${unit.play}?open=1`} className={btnSecondary}>
+                교사 미리 보기(모두 열기)
               </a>
             </div>
           </div>
@@ -187,17 +187,17 @@ export default async function UnitPage({ params }: PageProps<"/u/[repo]/[unit]">
             </h2>
             <div className="grid gap-2">
               {prev && (
-                <Link href={`/u/${course.repo}/${prev.slug}/`} className="flex min-h-12 items-center rounded-xl border-2 border-slate-200 px-3 text-sm font-bold hover:border-teal-600 dark:border-slate-700">
+                <Link href={`/u/${course.repo}/${prev.slug}/plan/`} className="flex min-h-12 items-center rounded-xl border-2 border-slate-200 px-3 text-sm font-bold hover:border-teal-600 dark:border-slate-700">
                   ← {prev.chapter} {prev.title}
                 </Link>
               )}
               {next && (
-                <Link href={`/u/${course.repo}/${next.slug}/`} className="flex min-h-12 items-center rounded-xl border-2 border-slate-200 px-3 text-sm font-bold hover:border-teal-600 dark:border-slate-700">
+                <Link href={`/u/${course.repo}/${next.slug}/plan/`} className="flex min-h-12 items-center rounded-xl border-2 border-slate-200 px-3 text-sm font-bold hover:border-teal-600 dark:border-slate-700">
                   {next.chapter} {next.title} →
                 </Link>
               )}
-              <a href={course.url} target="_blank" rel="noopener" className="flex min-h-12 items-center rounded-xl border-2 border-slate-200 px-3 text-sm font-bold hover:border-teal-600 dark:border-slate-700">
-                예전 과목 화면 ↗
+              <a href={unit.oldUrl} target="_blank" rel="noopener" className="flex min-h-12 items-center rounded-xl border-2 border-slate-200 px-3 text-sm font-bold hover:border-teal-600 dark:border-slate-700">
+                예전 주소의 같은 단원 ↗
               </a>
               <a href={OLD_HUB} className="flex min-h-12 items-center rounded-xl border-2 border-slate-200 px-3 text-sm font-bold hover:border-teal-600 dark:border-slate-700">
                 예전 허브
