@@ -54,6 +54,8 @@ npm run lint
 
 Next.js 16(App Router, 정적 내보내기) · TypeScript · Tailwind CSS v4 · react-markdown + remark-gfm · qrcode(빌드 때 SVG 생성) · sharp(작은 그림)
 
+> 보여 주기만 하는 사이트라 Astro 로 옮길지 여부는 나중에 판단합니다(지금은 Next.js 정적 내보내기로 충분히 동작).
+
 ## 라이선스
 
 코드는 MIT, 학습 내용은 CC BY-NC-SA 4.0 (각 과목 저장소와 같음).
