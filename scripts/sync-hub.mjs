@@ -1,16 +1,15 @@
 /*
  * 허브 화면 옮겨 담기 (fetch-content.mjs 가 syncUnits 다음에 부릅니다)
  *
- *   public/class/index.html     교사 화면(옛 허브 class/ 를 주소만 바꿔 그대로) — 열쇠는 sessionStorage(보안 브랜치 판)
+ *   public/class/index.html     교사 화면(옛 허브 class/ 를 주소만 바꿔 그대로) — 열쇠는 sessionStorage
  *   public/records/index.html   학생 기록·명단·PIN(같은 방식). 옛 뒷단·새 뒷단 둘 다 동작
  *   public/hub-assets/share-config.js  허브용 공유 설정(복사본에서 localhost 뺌)
  *   public/maps/plates.kml      판 경계 KML(파일 그대로)
  *   public/phet/index.html      자료실 PhET 칸(/resources/#PhET)으로 넘겨주기
  *   content/resources.json      자료실 목록(옛 resources/index.html 표를 읽어 React 화면용 자료로)
  *
- * class/·records/ 는 legacy/hub/<화면>/index.html 이 있으면 그것을 씁니다(지금은 science-teacher-hub 의
- * security/share-backend 브랜치 판 + 옛·새 뒷단 겸용 손질). 브랜치가 main 에 합쳐지면 legacy/hub/ 를 지워
- * science-teacher-hub main 판을 읽게 하면 됩니다.
+ * class/·records/ 는 science-teacher-hub main 판을 씁니다. 급히 이 사이트만 다른 판을 써야 하면
+ * legacy/hub/<화면>/index.html 을 두면 그것이 우선합니다(지금은 없음).
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -91,7 +90,7 @@ export function syncHub({ root, contentDir, courses, base, engine }) {
       errors.push(`${name}/index.html 이 없습니다: ${src}`);
       continue;
     }
-    notes.push(`${name}/ ← ${fs.existsSync(override) ? "legacy/hub(보안 브랜치 판)" : "science-teacher-hub main"}`);
+    notes.push(`${name}/ ← ${fs.existsSync(override) ? "legacy/hub(임시 사본)" : "science-teacher-hub main"}`);
     const html = rewriteHubPage(fs.readFileSync(src, "utf8"), { base, engine, repoSet, errors, name });
     mkdir(path.join(pub, name));
     fs.writeFileSync(path.join(pub, name, "index.html"), html);

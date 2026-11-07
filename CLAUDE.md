@@ -33,7 +33,6 @@ Next.js 16 App Router + TypeScript + Tailwind CSS v4, `output: 'export'`, basePa
 - `scripts/sync-units.mjs` — 단원 화면 옮겨 담기(엔진 한 벌, 저장소별 share-config·people-data, 허브 자료, 단원 index.html 주소 바꾸기, 빠진 파일 검사)
 - `legacy/hub-next.js` — 단원 화면에 끼우는 연결 파일(기준 주소 전역, 교사 기기에만 지도안 링크)
 - `scripts/sync-hub.mjs` — 허브 화면 옮겨 담기(class/·records/ 정적 복사, 허브 share-config, plates.kml, phet/ 넘겨주기, 자료실 목록 content/resources.json)
-- `legacy/hub/` — class/·records/ 의 이 사이트 판(보안 브랜치 기준 + 옛·새 뒷단 겸용). README 참고
 - `app/resources/`(자료실), `app/qr/`(QR 모음·인쇄), `app/maps/`(판 구조 지도), `components/Progress.tsx`(진도 막대), `components/DeviceMode.tsx`(?all=1 학생 모드·교사 기기 표시)
 - `scripts/check-units.mjs` — 배포 전 Playwright 점검(Actions 에서 자동)
 - `scripts/phase3/make-redirects.mjs` — 3단계 넘겨주기 스크립트(준비만, 돌리지 않음). 설계: `문서/3단계-넘겨주기-설계.md`
