@@ -1,0 +1,55 @@
+# main 에 올리면(또는 매일 새벽, 또는 손으로) 과목 저장소 내용을 새로 받아 빌드하고 GitHub Pages 에 올립니다.
+name: 빌드와 배포
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 18 * * *" # 매일 새벽 3시(한국 시간)에 단원 내용 새로 반영
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CONTENT_DIR: .content
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: 과목 저장소 받기(얕은 복제)
+        run: node scripts/fetch-content.mjs --clone
+
+      - run: npm run lint
+
+      - name: 정적 사이트 빌드
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
