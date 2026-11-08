@@ -1,12 +1,11 @@
-# main 에 올리면(또는 매일 새벽, 또는 손으로) 과목 저장소 내용을 새로 받아 빌드하고 GitHub Pages 에 올립니다.
-name: 빌드와 배포
+# science-hub-next 는 보관용입니다. 예전 주소로 온 사람을 정식 주소로 넘겨주는 작은 페이지만 올립니다.
+# 정식 허브: https://wmfsljy-coder.github.io/science-teacher-hub/ (소스·매일 새벽 빌드·점검은 science-teacher-hub 저장소의 site/ 와 pages.yml)
+name: 넘겨주기 페이지 배포
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
-  schedule:
-    - cron: "0 18 * * *" # 매일 새벽 3시(한국 시간)에 단원 내용 새로 반영
 
 permissions:
   contents: read
@@ -18,43 +17,13 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
-    env:
-      CONTENT_DIR: .content
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-
-      - run: npm ci
-
-      - name: 과목 저장소 받기(얕은 복제)
-        run: node scripts/fetch-content.mjs --clone
-
-      - run: npm run lint
-
-      - name: 정적 사이트 빌드
-        run: npm run build
-
-      # 배포 전 점검: out/ 을 공유 끈 로컬 서버로 띄우고 옛 점검 도구(allcheck·quizrun·labrun·tabcheck)를 새 경로로.
-      # 푸시는 표본(과목마다 1단원 + 몇 개), 매일 새벽·손으로 돌릴 때는 44단원 전부. 실패하면 배포하지 않음.
-      - name: 브라우저 설치(Playwright)
-        run: npx playwright install --with-deps chromium
-
-      - name: 배포 전 점검
-        run: node scripts/check-units.mjs ${{ github.event_name != 'push' && '--all' || '' }}
-
-      - name: 점검 결과 보관
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: check-report
-          path: check-report
-          if-no-files-found: ignore
-
+      - name: 넘겨주기 페이지 만들기
+        run: node scripts/make-archive.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: out

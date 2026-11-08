@@ -1,0 +1,106 @@
+[
+ {
+  "repo": "integrated-science-1",
+  "units": [
+   "1-1",
+   "1-2",
+   "2-1",
+   "2-2",
+   "3-1",
+   "3-2",
+   "3-3"
+  ]
+ },
+ {
+  "repo": "integrated-science-2",
+  "units": [
+   "1-1",
+   "1-2",
+   "2-1",
+   "2-2",
+   "3-1",
+   "3-2"
+  ]
+ },
+ {
+  "repo": "science-inquiry-1",
+  "units": [
+   "1-1",
+   "1-2",
+   "1-3",
+   "1-4"
+  ]
+ },
+ {
+  "repo": "science-inquiry-2",
+  "units": [
+   "2-1",
+   "2-2",
+   "2-3",
+   "2-4"
+  ]
+ },
+ {
+  "repo": "earth-science-2",
+  "units": [
+   "1-1",
+   "1-2",
+   "2-1",
+   "2-2",
+   "3-1",
+   "3-2"
+  ]
+ },
+ {
+  "repo": "earth-system-1",
+  "units": [
+   "1-1",
+   "1-2"
+  ]
+ },
+ {
+  "repo": "earth-system-2",
+  "units": [
+   "2-1",
+   "2-2"
+  ]
+ },
+ {
+  "repo": "planet-space-1",
+  "units": [
+   "1-1",
+   "1-2"
+  ]
+ },
+ {
+  "repo": "planet-space-2",
+  "units": [
+   "2-1",
+   "2-2"
+  ]
+ },
+ {
+  "repo": "science-history-culture",
+  "units": [
+   "1",
+   "2",
+   "3"
+  ]
+ },
+ {
+  "repo": "convergence-science-inquiry",
+  "units": [
+   "1",
+   "2",
+   "3"
+  ]
+ },
+ {
+  "repo": "climate-change-ecology",
+  "units": [
+   "1",
+   "2",
+   "3"
+  ]
+ }
+]
