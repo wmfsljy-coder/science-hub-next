@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 /* 과목 전체 QR(?all=1)로 들어온 학생 기기: 이 탭(sessionStorage) 동안 교사용 단추를 숨깁니다.
- * 옛 엔진(theme.js)과 같은 약속 — sessionStorage "sth-all" = "/science-hub-next/u/<저장소>/" 이면
+ * 옛 엔진(theme.js)과 같은 약속 — sessionStorage "sth-all" = "/science-hub-next-ywarpe/u/<저장소>/" 이면
  * 단원 화면도 그 과목 밖으로 나가는 링크를 숨기고 '← 단원 목록'을 이 과목 페이지로 돌립니다. 교사 기기(sth-teacher)는 그대로. */
 export function StudentGate({ subj }: { subj: string }) {
   useEffect(() => {

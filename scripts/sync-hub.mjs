@@ -100,7 +100,7 @@ export function syncHub({ root, contentDir, courses, base, engine }) {
   const sc = path.join(hub, "assets", "share-config.js");
   if (fs.existsSync(sc)) {
     fs.writeFileSync(path.join(pub, "hub-assets", "share-config.js"), patchShareConfig(fs.readFileSync(sc, "utf8"), "science-teacher-hub", (m) => errors.push(m)));
-  } else errors.push("science-teacher-hub/assets/share-config.js 가 없습니다");
+  } else errors.push("science-teacher-hub-qtrqwc/assets/share-config.js 가 없습니다");
 
   /* 3. 판 경계 KML */
   const kml = path.join(hub, "maps", "plates.kml");

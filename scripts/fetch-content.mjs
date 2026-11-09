@@ -19,7 +19,9 @@ import { syncHub } from "./sync-hub.mjs";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OWNER = "wmfsljy-coder";
 const PAGES = `https://${OWNER}.github.io`;
-const BASE = "/science-hub-next"; /* next.config.ts 의 basePath 와 같아야 합니다 */
+const BASE = "/science-hub-next-ywarpe"; /* next.config.ts 의 basePath 와 같아야 합니다 */
+/* 저장소 이름(=GitHub Pages 주소)은 pages, 폴더 이름은 repo (2026-11-09 주소 변경) */
+const pg = (c) => c.pages || c.repo;
 const courses = JSON.parse(fs.readFileSync(path.join(ROOT, "lib", "courses.json"), "utf8"));
 
 const contentDir = path.resolve(ROOT, process.env.CONTENT_DIR || "..");
@@ -36,7 +38,7 @@ if (doClone) {
       continue;
     }
     console.log(`받는 중: ${c.repo}`);
-    execFileSync("git", ["clone", "--depth", "1", `https://github.com/${OWNER}/${c.repo}.git`, dest], { stdio: "inherit" });
+    execFileSync("git", ["clone", "--depth", "1", `https://github.com/${OWNER}/${pg(c)}.git`, dest], { stdio: "inherit" });
   }
 }
 
@@ -190,7 +192,7 @@ for (const c of courses) {
     if (im) {
       thumbAlt = strip(im[2]);
       const src = path.join(ud, im[1]);
-      const liveSrc = `${PAGES}/${c.repo}/${slug}/${im[1]}`;
+      const liveSrc = `${PAGES}/${pg(c)}/${slug}/${im[1]}`;
       thumb = liveSrc;
       if (sharp && fs.existsSync(src)) {
         const dest = path.join(thumbDir, `${id}.webp`);
@@ -215,11 +217,11 @@ for (const c of courses) {
       /* 학생 주소(QR): 이 사이트 안 단원 화면. oldUrl 은 예전 과목 저장소 주소 */
       url: `${PAGES}${BASE}/u/${c.repo}/${slug}/`,
       play: `${BASE}/u/${c.repo}/${slug}/`,
-      oldUrl: `${PAGES}/${c.repo}/${slug}/`,
+      oldUrl: `${PAGES}/${pg(c)}/${slug}/`,
       thumb,
       thumbAlt,
       key,
-      sections: SECTIONS[`${c.repo}/${slug}`] || [],
+      sections: SECTIONS[`${pg(c)}/${slug}`] || [],
       counts: { ...lesson.counts, precheck: (pre.match(/\{\s*id:\s*"p/g) || []).length || null },
       standards: lesson.standards,
       periods: lesson.periods,
@@ -228,7 +230,7 @@ for (const c of courses) {
     });
   }
   unitTotal += units.length;
-  out.courses.push({ ...c, description: desc, url: `${PAGES}/${c.repo}/`, units });
+  out.courses.push({ ...c, description: desc, url: `${PAGES}/${pg(c)}/`, units });
   console.log(`${c.name}: ${units.length}개 단원`);
 }
 

@@ -1,5 +1,5 @@
 # science-hub-next 는 보관용입니다. 예전 주소로 온 사람을 정식 주소로 넘겨주는 작은 페이지만 올립니다.
-# 정식 허브: https://wmfsljy-coder.github.io/science-teacher-hub/ (소스·매일 새벽 빌드·점검은 science-teacher-hub 저장소의 site/ 와 pages.yml)
+# 정식 허브: https://wmfsljy-coder.github.io/science-teacher-hub-qtrqwc/ (소스·매일 새벽 빌드·점검은 science-teacher-hub 저장소의 site/ 와 pages.yml)
 name: 넘겨주기 페이지 배포
 
 on:

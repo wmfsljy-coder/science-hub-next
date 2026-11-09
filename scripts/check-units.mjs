@@ -4,7 +4,7 @@
  *
  *   node scripts/check-units.mjs            표본(과목마다 1단원 + 무거운 단원 몇 개)
  *   node scripts/check-units.mjs --all      44단원 전부(매일 새벽·손으로 돌릴 때)
- *   환경 변수: CONTENT_DIR(점검 도구 = <CONTENT_DIR>/science-teacher-hub/_tools), PW_CHANNEL(msedge·chrome 등 설치된 브라우저 쓰기)
+ *   환경 변수: CONTENT_DIR(점검 도구 = <CONTENT_DIR>/science-teacher-hub-qtrqwc/_tools), PW_CHANNEL(msedge·chrome 등 설치된 브라우저 쓰기)
  *
  * 보는 것
  *   1. 단원마다: 콘솔 오류 0, 우리 사이트 파일 실패 0, 모든 탭이 보임
@@ -24,13 +24,13 @@ const CONTENT = path.resolve(ROOT, process.env.CONTENT_DIR || "..");
 const TOOLS = path.join(CONTENT, "science-teacher-hub", "_tools");
 const PORT = 4199;
 const ORIGIN = `http://localhost:${PORT}`;
-const BASE = "/science-hub-next";
+const BASE = "/science-hub-next-ywarpe";
 const ALL = process.argv.includes("--all");
 
 const gen = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "generated.json"), "utf8"));
 const allUnits = gen.courses.flatMap((c) => c.units.map((u) => `${c.repo}/${u.slug}`));
 /* 표본: 과목마다 첫 단원 + 실제 자료·선택 부품이 많은 단원 */
-const EXTRA = ["integrated-science-2/2-1", "science-inquiry-2/2-4", "earth-science-2/3-2", "planet-space-2/2-1"];
+const EXTRA = ["integrated-science-2-yt735f/2-1", "science-inquiry-2-wc25wp/2-4", "earth-science-2-vm2vds/3-2", "planet-space-2-v7c45w/2-1"];
 const units = ALL ? allUnits : [...new Set([...gen.courses.map((c) => `${c.repo}/${c.units[0].slug}`), ...EXTRA.filter((u) => allUnits.includes(u))])];
 
 for (const f of ["allcheck.js", "quizrun.js", "quizcheck.js", "labrun.js", "labcheck.js", "tabcheck.js"]) {
@@ -99,7 +99,7 @@ for (const u of units) {
 
 /* 2. 옛 점검 도구(새 경로) */
 await page.goto(`${ORIGIN}${BASE}/`);
-const list = units.map((u) => `science-hub-next/u/${u}`);
+const list = units.map((u) => `science-hub-next-ywarpe/u/${u}`);
 for (const [name, file, glob] of [
   ["allcheck", "allcheck.js", "AC"],
   ["quizrun", "quizrun.js", "QR"],

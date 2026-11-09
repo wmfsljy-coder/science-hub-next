@@ -6,12 +6,12 @@
 import fs from "node:fs";
 import path from "node:path";
 
-export const OLD_HUB = "https://wmfsljy-coder.github.io/science-teacher-hub/";
-export const GITHUB = "https://github.com/wmfsljy-coder/science-hub-next";
+export const OLD_HUB = "https://wmfsljy-coder.github.io/science-teacher-hub-qtrqwc/";
+export const GITHUB = "https://github.com/wmfsljy-coder/science-hub-next-ywarpe";
 /** basePath (일반 <a> 링크·정적 파일 주소에 붙임) */
 export const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 /** 학생에게 주는 절대 주소 바탕(QR) */
-export const SITE = "https://wmfsljy-coder.github.io/science-hub-next";
+export const SITE = "https://wmfsljy-coder.github.io/science-hub-next-ywarpe";
 
 export type FlowStep = { label: string; kind: "intro" | "story" | "step" };
 export type Standard = { code: string; text: string };
@@ -33,7 +33,7 @@ export type Unit = {
   part: string;
   summary: string;
   topics: string[];
-  /** 학생 주소(QR용, 절대 주소): https://…/science-hub-next/u/<저장소>/<단원>/ */
+  /** 학생 주소(QR용, 절대 주소): https://…/science-hub-next-ywarpe/u/<저장소>/<단원>/ */
   url: string;
   /** 이 사이트 안 단원 화면(basePath 포함, 일반 <a> 링크용 — 단원 화면은 Next 페이지가 아니라 옮겨 담은 정적 HTML) */
   play: string;

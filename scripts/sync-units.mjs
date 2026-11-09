@@ -59,13 +59,13 @@ function copyTree(src, dest, skip) {
 /* 엔진 복사본에만 적용하는 주소 바꾸기. need=true 인데 못 찾으면 경고(엔진이 바뀐 것). */
 function enginePatches(base) {
   return [
-    { file: "account.js", from: '"/science-teacher-hub/assets/unit-items-all.js"', to: `"${base}/hub-assets/unit-items-all.js"`, need: true },
-    { file: "review.js", from: '"/science-teacher-hub/assets/review-"', to: `"${base}/hub-assets/review-"`, need: true },
+    { file: "account.js", from: '"/science-teacher-hub-qtrqwc/assets/unit-items-all.js"', to: `"${base}/hub-assets/unit-items-all.js"`, need: true },
+    { file: "review.js", from: '"/science-teacher-hub-qtrqwc/assets/review-"', to: `"${base}/hub-assets/review-"`, need: true },
     /* 교사 기기의 '← 허브' 링크 → 새 사이트 첫 화면 */
-    { file: "theme.js", from: 'a.href = "https://wmfsljy-coder.github.io/science-teacher-hub/";', to: `a.href = "${base}/";`, need: true },
+    { file: "theme.js", from: 'a.href = "https://wmfsljy-coder.github.io/science-teacher-hub-qtrqwc/";', to: `a.href = "${base}/";`, need: true },
     /* 과목 첫 화면의 '과목 QR 모음·인쇄' → 새 사이트 QR 모음 */
-    { file: "theme.js", from: "https://wmfsljy-coder.github.io/science-teacher-hub/qr/?s=", to: `${base}/qr/?s=`, need: true },
-    /* 과목 전체 QR(?all=1) 학생 울타리: 과목 = /science-hub-next/u/<저장소>/ */
+    { file: "theme.js", from: "https://wmfsljy-coder.github.io/science-teacher-hub-qtrqwc/qr/?s=", to: `${base}/qr/?s=`, need: true },
+    /* 과목 전체 QR(?all=1) 학생 울타리: 과목 = /science-hub-next-ywarpe/u/<저장소>/ */
     {
       file: "theme.js",
       from: 'var SUBJ = (/^\\/[^\\/]+\\//.exec(location.pathname) || ["/"])[0]',
@@ -147,7 +147,7 @@ export function syncUnits({ root, contentDir, courses, base }) {
       if (text.includes(p.from)) text = text.split(p.from).join(p.to);
       else if (p.need) warn(`엔진 ${name}: 바꿀 글귀를 못 찾음 → ${p.from.slice(0, 60)}`);
     }
-    if (/["'`]\/science-teacher-hub\/assets\//.test(text)) errors.push(`엔진 ${name} 에 옛 허브 절대 주소(/science-teacher-hub/assets/)가 남아 있습니다.`);
+    if (/["'`]\/science-teacher-hub\/assets\//.test(text)) errors.push(`엔진 ${name} 에 옛 허브 절대 주소(/science-teacher-hub-qtrqwc/assets/)가 남아 있습니다.`);
     fs.writeFileSync(path.join(outEngine, name), text);
     engine[name] = hash(text);
   }
@@ -207,8 +207,8 @@ export function syncUnits({ root, contentDir, courses, base }) {
       for (const f of fs.readdirSync(outD).filter((n) => n.endsWith(".js"))) {
         const fp = path.join(outD, f);
         const s = fs.readFileSync(fp, "utf8");
-        if (s.includes("science-teacher-hub/resources/")) {
-          fs.writeFileSync(fp, s.split("https://wmfsljy-coder.github.io/science-teacher-hub/resources/").join(`${base}/resources/`).split("science-teacher-hub/resources/").join(`${base.slice(1)}/resources/`));
+        if (s.includes("science-teacher-hub-qtrqwc/resources/")) {
+          fs.writeFileSync(fp, s.split("https://wmfsljy-coder.github.io/science-teacher-hub-qtrqwc/resources/").join(`${base}/resources/`).split("science-teacher-hub-qtrqwc/resources/").join(`${base.slice(1)}/resources/`));
           resFix++;
         }
       }
@@ -229,7 +229,7 @@ export function syncUnits({ root, contentDir, courses, base }) {
       else html = html.slice(0, at) + tag + html.slice(at);
       /* 우리 Pages 주소로 가는 링크 → 이 사이트 안으로 */
       html = rewriteOwnLinks(html, { base, repoSet, fallback: coursePage });
-      if (html.includes("science-teacher-hub/")) errors.push(`${c.repo}/${slug}: index.html 에 옛 허브 주소가 남음`);
+      if (html.includes("science-teacher-hub-qtrqwc/")) errors.push(`${c.repo}/${slug}: index.html 에 옛 허브 주소가 남음`);
       fs.writeFileSync(path.join(outD, "index.html"), html);
 
       /* 바꾼 페이지가 가리키는 우리 사이트 파일이 다 있는지 확인 */

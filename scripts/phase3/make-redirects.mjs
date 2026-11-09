@@ -25,7 +25,7 @@ const DIR = path.resolve(args.includes("--dir") ? args[args.indexOf("--dir") + 1
 const APPLY = args.includes("--apply");
 const UNDO = args.includes("--undo");
 const SITE = "https://wmfsljy-coder.github.io";
-const NEW = "/science-hub-next";
+const NEW = "/science-hub-next-ywarpe";
 
 const courses = JSON.parse(fs.readFileSync(path.join(ROOT, "lib", "courses.json"), "utf8"));
 /* 옛 과목 묶음 껍데기 → 새 첫 화면(과목군 거르기는 첫 화면에서) */

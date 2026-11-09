@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 /*
- * science-hub-next 는 보관용입니다. 정식 주소는 https://wmfsljy-coder.github.io/science-teacher-hub/ (소스: science-teacher-hub/site/).
+ * science-hub-next 는 보관용입니다. 정식 주소는 https://wmfsljy-coder.github.io/science-teacher-hub-qtrqwc/ (소스: science-teacher-hub/site/).
  * 이 스크립트는 예전 science-hub-next 주소로 들어온 사람을 정식 주소로 넘겨주는 작은 페이지들만 out/ 에 만듭니다.
  * 주소 뒤 ?sec= · ?open= · ?all= · # 는 그대로 붙여 넘깁니다.
  *
- *   /science-hub-next/                         → /science-teacher-hub/
- *   /science-hub-next/c/<저장소>/              → /science-teacher-hub/c/<저장소>/
- *   /science-hub-next/u/<저장소>/<단원>/       → /<저장소>/<단원>/            (정식 단원 주소)
- *   /science-hub-next/u/<저장소>/<단원>/plan/  → /science-teacher-hub/u/<저장소>/<단원>/plan/
- *   /science-hub-next/u/<저장소>/              → /science-teacher-hub/c/<저장소>/
- *   /science-hub-next/resources/ · qr/ · maps/ · class/ · records/ → /science-teacher-hub/ 의 같은 화면, phet/ → 자료실 PhET 칸
- *   그 밖의 주소(404.html)                     → 같은 규칙으로 계산, 모르면 /science-teacher-hub/
+ *   /science-hub-next-ywarpe/                         → /science-teacher-hub-qtrqwc/
+ *   /science-hub-next-ywarpe/c/<저장소>/              → /science-teacher-hub-qtrqwc/c/<저장소>/
+ *   /science-hub-next-ywarpe/u/<저장소>/<단원>/       → /<저장소>/<단원>/            (정식 단원 주소)
+ *   /science-hub-next-ywarpe/u/<저장소>/<단원>/plan/  → /science-teacher-hub-qtrqwc/u/<저장소>/<단원>/plan/
+ *   /science-hub-next-ywarpe/u/<저장소>/              → /science-teacher-hub-qtrqwc/c/<저장소>/
+ *   /science-hub-next-ywarpe/resources/ · qr/ · maps/ · class/ · records/ → /science-teacher-hub-qtrqwc/ 의 같은 화면, phet/ → 자료실 PhET 칸
+ *   그 밖의 주소(404.html)                     → 같은 규칙으로 계산, 모르면 /science-teacher-hub-qtrqwc/
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -18,7 +18,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "out");
-const HUB = "/science-teacher-hub";
+const HUB = "/science-teacher-hub-qtrqwc";
 const list = JSON.parse(fs.readFileSync(path.join(ROOT, "archive", "units.json"), "utf8"));
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -51,7 +51,7 @@ fs.writeFileSync(
   path.join(OUT, "404.html"),
   `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>과학 수업 허브로 이동</title><script>
 (function () {
-  var p = location.pathname.replace(/^\\/science-hub-next/, ""), m, t = "${HUB}/";
+  var p = location.pathname.replace(/^\\/science-hub-next-ywarpe/, ""), m, t = "${HUB}/";
   if ((m = /^\\/u\\/([\\w-]+)\\/([\\w-]+)\\/plan\\//.exec(p))) t = "${HUB}/u/" + m[1] + "/" + m[2] + "/plan/";
   else if ((m = /^\\/u\\/([\\w-]+)\\/([\\w-]+)\\//.exec(p))) t = "/" + m[1] + "/" + m[2] + "/";
   else if ((m = /^\\/(?:u|c)\\/([\\w-]+)/.exec(p))) t = "${HUB}/c/" + m[1] + "/";

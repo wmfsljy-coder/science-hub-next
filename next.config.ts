@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
-/* GitHub Pages 주소가 https://wmfsljy-coder.github.io/science-hub-next/ 이므로 basePath 를 붙입니다. */
-const basePath = "/science-hub-next";
+/* GitHub Pages 주소가 https://wmfsljy-coder.github.io/science-hub-next-ywarpe/ 이므로 basePath 를 붙입니다. */
+const basePath = "/science-hub-next-ywarpe";
 
 const nextConfig: NextConfig = {
   output: "export",

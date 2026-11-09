@@ -1,6 +1,6 @@
 # science-hub-next (보관용)
 
-> **정식 주소는 https://wmfsljy-coder.github.io/science-teacher-hub/ 입니다.**
+> **정식 주소는 https://wmfsljy-coder.github.io/science-teacher-hub-qtrqwc/ 입니다.**
 > 새 허브 화면의 소스는 science-teacher-hub 저장소의 `site/` 폴더로 옮겼고, 빌드·매일 새벽 점검·배포도 그쪽 `.github/workflows/pages.yml` 이 합니다.
 > 단원 수업 화면은 각 과목 저장소 주소(`https://wmfsljy-coder.github.io/<저장소>/<단원>/`)가 정식입니다.
 
@@ -21,8 +21,8 @@
 
 고등학교 과학 **12과목 44단원**의 인터랙티브 수업을 한곳에서 찾고, 지도안을 읽고, 학생에게 QR로 바로 여는 사이트입니다. 44단원 수업 화면도 이 사이트 안에서 돌아갑니다.
 
-- 바로 열기: https://wmfsljy-coder.github.io/science-hub-next/
-- 예전 허브: https://wmfsljy-coder.github.io/science-teacher-hub/
+- 바로 열기: https://wmfsljy-coder.github.io/science-hub-next-ywarpe/
+- 예전 허브: https://wmfsljy-coder.github.io/science-teacher-hub-qtrqwc/
 
 ## 무엇이 있나요
 
